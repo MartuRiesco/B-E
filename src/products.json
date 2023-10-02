@@ -1,0 +1,92 @@
+[
+	{
+		"id": 1,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "1",
+		"stock": 24
+	},
+	{
+		"id": 2,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "2",
+		"stock": 24
+	},
+	{
+		"id": 3,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "3",
+		"stock": 24
+	},
+	{
+		"id": 4,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "4",
+		"stock": 24
+	},
+	{
+		"id": 5,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "5",
+		"stock": 24
+	},
+	{
+		"id": 6,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "6",
+		"stock": 24
+	},
+	{
+		"id": 7,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "7",
+		"stock": 24
+	},
+	{
+		"id": 8,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "8",
+		"stock": 24
+	},
+	{
+		"id": 9,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "9",
+		"stock": 24
+	},
+	{
+		"id": 10,
+		"title": "Hal",
+		"description": "descripcion",
+		"price": 123,
+		"thumbnail": "imagen",
+		"code": "10",
+		"stock": 24
+	}
+]
