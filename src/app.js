@@ -12,7 +12,7 @@ app.get('/products', (req, res) => {
       const numberLimit = parseInt(limit);
   
       if (isNaN(numberLimit) || numberLimit <= 0) {
-        return res.status(400).json({ error: 'Invalid limit value' });
+        return res.status(400).json({ error: 'Limite invalido' });
       }else{
       const limitedProducts = products.slice(0, numberLimit);
       return res.json(limitedProducts);}
