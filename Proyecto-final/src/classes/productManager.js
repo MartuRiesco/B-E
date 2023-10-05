@@ -1,4 +1,4 @@
-const  fs= require('fs')
+import fs from 'fs'
 class ProductManager{
     constructor(path){
        this.path = path;
@@ -69,8 +69,8 @@ class ProductManager{
       throw new Error(`El archivo ${path} no tiene un formato JSON válido.`);
     };
 }
-
-  async function test() {
+export default ProductManager
+ /*  async function test() {
     const productManager = new ProductManager('./products.json');
      await productManager.addProduct({
         title: 'Hal',
@@ -84,4 +84,4 @@ class ProductManager{
     console.log('😎 Acá los productos:', products);
       }
       
-      test();
+      test(); */
