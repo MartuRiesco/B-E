@@ -8,8 +8,8 @@ class ProductManager{
           return  getJSONFromFile(this.path);
        }
       async addProduct(product){ 
-        const { title, description, price, thumbnail, code, stock } = product
-        if (!title || !description || !price ||!thumbnail || !code || !stock){
+        const { title, description, price, thumbnails, code, category,status } = product
+        if (!title || !description || !price ||!thumbnails || !code || !category || !status){
             throw new Error('debe completar todos los campos')
         }
         const products = await this.getProduct();
@@ -18,7 +18,7 @@ class ProductManager{
           throw new Error( 'Este producto ya fue agregado. ')
         }
         let id = products.length+1
-        const newProduct = { id,  title, description, price, thumbnail, code, stock  };
+        const newProduct = { id,  title, description, price, thumbnails, code, status };
         products.push(newProduct);
        
         await this.saveJSONToFile(this.path, products);
@@ -31,6 +31,18 @@ class ProductManager{
                 }
                 return product;
               }
+              
+         async deleteProduct(id) {
+          const products = await this.getProduct();
+          const productIndex = products.findIndex((product) => product.id === id);
+          if (productIndex !== -1) {
+            products.splice(productIndex, 1);
+            await this.saveJSONToFile(this.path, products);
+            console.log('se ha borrado correctamente');
+          } else {
+            throw new Error('Producto no encontrado');
+          }
+        }
               saveJSONToFile = async (path, data) => {
                 const content = JSON.stringify(data, null, '\t');
                 try {
@@ -38,8 +50,26 @@ class ProductManager{
                 } catch (error) {
                   throw new Error(`El archivo ${path} no pudo ser escrito.`);
                 }
-              };   
-              }
+              };  
+              async updateProduct(id, productUpdate) {
+                const products = await getJSONFromFile(this.path);
+                const index = products.findIndex(product => product.id === id);
+                if (index !== -1) {
+                  const updatedProduct = {
+                    ...products[index],
+                    ...productUpdate,
+                  };
+              
+                  products[index] = updatedProduct;
+                  await this.saveJSONToFile(this.path, products);
+                  console.log('Producto Actualizado:', updatedProduct);
+                  return updatedProduct;
+                } else {
+                  console.log('No se ha podido actualizar el producto. El ID proporcionado no existe.');
+                  return null;
+                }
+          
+   }}
    
    const existFile = async (path) => {
     try {

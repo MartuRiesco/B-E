@@ -5,7 +5,7 @@ import ProductManager from '../classes/productManager.js'
 const productManager = new ProductManager('src/products.json');
  let products = await productManager.getProduct();
 const router = Router()
- router.get('/', async(req, res) => {
+ router.get('/products', async(req, res) => {
      const { limit } = req.query;
      if (!limit) {
         return res.status(201).send(products)
@@ -20,7 +20,7 @@ const router = Router()
    
      }
    });
-   router.get('/:productId', async(req, res) => {
+   router.get('/products/:productId', async(req, res) => {
     const { productId } = req.params;
     const prod = products.find((product) => product.id === parseInt(productId))
     if(!prod){
@@ -29,8 +29,72 @@ const router = Router()
     const product = products.find((user) => user.id === parseInt(productId));
     res.json(product);}
   });
+  router.post('/products', async (req, res)=>{
+    const body = req.body;
+    const { title, description, code, price, status, category, thumbnails}= body
+   try{ 
+    if( !(title && description && code && price
+     && status  && category )  ){
+      return res.status(400).json({error: `todos los campos son requeridos` })
+      // throw new Error(`Some data is missing`)
+  }
+    if(!(typeof title === 'string' && typeof description === 'string' 
+    && typeof code === 'string' && typeof price === 'number' 
+     && typeof category === 'string')){
+       return res.status(400).json({message:'Error en el tipo de dato ingresado'})
+    } else{
+      res.status(201).send('productos agregados')
+    }
+    const newProduct= {
+      id: products.length + 1,
+      title, 
+      description,
+      code,
+      price,
+      status,
+      category,
+      thumbnails
+    }
+     let added = await productManager.addProduct(newProduct)
+     console.log(newProduct);
+     if (typeof added !== 'string') {
+      throw new Error(`El producto no se pudo agregar`)
+  } else {
+      res.status(201).send(newProduct)
+  }}
+  catch(error){
+    // console.log(error.message)
+    console.log("error", error)
+    return res.status(500).send(error)
+  }})
+  router.put('/products/:productId', async (req, res)=>{
+   try{ 
+    const {productId} = req.params
+    const update =req.body
+    const productToUpdate = products.find(p => (Number(productId) === p.id))
+    if(productToUpdate){
+      await productManager.updateProduct(Number(productId), update)
+      res.status(201).send({message:`acutalizacion del producto de id ${productId}`})
+    }else{
+      res.status(400).send({message:'no se puedo actualizar el producto'})
+    }}
+    catch(error){
+      return res.status(400).send({error: err.message})
+    }
+  })
+  router.delete('/products/:productId', async (req,res)=>{
+   try{ const {productId}= req.params
+    const productToEliminate = products.find(p => (Number(productId) === p.id))
+    if(productToEliminate){
+      await productManager.deleteProduct(Number(productId))
+      res.status(201).send({message:`Se elimino el producto de id ${productId}`})
+    }else{
+      res.status(400).send({message:'no se puedo eliminar el producto'})
+    }
+  
+  }catch(error){
+   return res.status(400).send({error: err.message})
+  }
+  })
    export default  router;
-/*  router.get();
- router.post();
- router.put();
- router.delete(); */
+/*router.delete(); */

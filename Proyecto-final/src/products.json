@@ -1,4 +1,4 @@
- [
+[
 	{
 		"id": 1,
 		"title": "Hal",
@@ -88,5 +88,14 @@
 		"thumbnail": "imagen",
 		"code": "10",
 		"stock": 24
+	},
+	{
+		"id": 11,
+		"title": "producto actualizado",
+		"thumbnails": [],
+		"description": "producto de prueba actualizado",
+		"price": 4,
+		"code": "producto actualizado",
+		"status": true
 	}
 ]
