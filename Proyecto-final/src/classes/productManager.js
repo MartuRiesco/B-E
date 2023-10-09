@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { getNewId } from '../utils/utils.js';
 class ProductManager{
     constructor(path){
        this.path = path;
@@ -17,7 +18,7 @@ class ProductManager{
         if(productExists){
           throw new Error( 'Este producto ya fue agregado. ')
         }
-        let id = products.length+1
+        let id = getNewId()
         const newProduct = { id,  title, description, price, thumbnails, code, status };
         products.push(newProduct);
        

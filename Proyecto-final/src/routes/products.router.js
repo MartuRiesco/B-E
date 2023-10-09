@@ -1,5 +1,6 @@
 import {Router} from "express"
 import ProductManager from '../classes/productManager.js'
+import { getNewId } from "../utils/utils.js";
 
 
 const productManager = new ProductManager('src/products.json');
@@ -29,6 +30,7 @@ const router = Router()
     const product = products.find((user) => user.id === parseInt(productId));
     res.json(product);}
   });
+
   router.post('/products', async (req, res)=>{
     const body = req.body;
     const { title, description, code, price, status, category, thumbnails}= body
@@ -46,7 +48,7 @@ const router = Router()
       res.status(201).send('productos agregados')
     }
     const newProduct= {
-      id: products.length + 1,
+      id: getNewId(),
       title, 
       description,
       code,
@@ -96,5 +98,5 @@ const router = Router()
    return res.status(400).send({error: err.message})
   }
   })
-   export default  router;
+   export default  {router, products};
 /*router.delete(); */

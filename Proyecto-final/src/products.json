@@ -97,5 +97,14 @@
 		"price": 4,
 		"code": "producto actualizado",
 		"status": true
+	},
+	{
+		"id": "fb56cade-e6b7-45be-a949-d7626ffb1125",
+		"title": "producto2",
+		"description": "producto de prueba",
+		"price": 2,
+		"thumbnails": [],
+		"code": "producto2",
+		"status": true
 	}
 ]
