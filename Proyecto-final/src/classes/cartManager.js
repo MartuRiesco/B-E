@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { getNewId } from '../utils/utils.js';
+import { log } from 'console';
 class CartManager{
     constructor(path){
        this.path = path;
@@ -40,26 +41,27 @@ class CartManager{
           return cart;
         }
         async addProductToCart(cartId, product){
-        let cart = await this.getCart();
-        const cartIndex = cart.findIndex((c) => c.id === cartId);
-        if( cartIndex && product !== undefined){
-            const newProduct = {
-                "product": product.id,
-                "quantity": 1
-            }
-        
-        const productExists= cart.products.find((p)=>p.id===p.product);
-        if(productExists) {
-          productExists.quantity++
-      } else {
-          cart.products.push(newProduct)
-      }
-      await this.saveJSONToFile(this.path, cart)
-  } else {
-      throw new Error('no existe un carrito con ese id')
-  }}
+   let cart = await this.getCart();
+  const cartIndex = cart.findIndex((c) => c.id === cartId);
 
-             }
+  if (cartIndex === -1) {
+    throw new Error('No existe un carrito con ese id');
+  }
+
+  const existingProduct = cart[cartIndex].products.find(p => p.product === product.id);
+
+  if (existingProduct) {
+    existingProduct.quantity++;
+  } else {
+    cart[cartIndex].products.push({
+      product: product.id,
+      quantity: 1
+    });
+  }
+
+  await this.saveJSONToFile(this.path, cart);
+
+             }}
    
    const existFile = async (path) => {
     try {

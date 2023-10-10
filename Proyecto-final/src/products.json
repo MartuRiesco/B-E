@@ -1,110 +1,56 @@
 [
 	{
-		"id": 1,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "1",
-		"stock": 24
-	},
-	{
-		"id": 2,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "2",
-		"stock": 24
-	},
-	{
-		"id": 3,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "3",
-		"stock": 24
-	},
-	{
-		"id": 4,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "4",
-		"stock": 24
-	},
-	{
-		"id": 5,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "5",
-		"stock": 24
-	},
-	{
-		"id": 6,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "6",
-		"stock": 24
-	},
-	{
-		"id": 7,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "7",
-		"stock": 24
-	},
-	{
-		"id": 8,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "8",
-		"stock": 24
-	},
-	{
-		"id": 9,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "9",
-		"stock": 24
-	},
-	{
-		"id": 10,
-		"title": "Hal",
-		"description": "descripcion",
-		"price": 123,
-		"thumbnail": "imagen",
-		"code": "10",
-		"stock": 24
-	},
-	{
-		"id": 11,
-		"title": "producto actualizado",
+		"id": "e9e7a033-42b9-4e5e-be71-e3fa6eaa437c",
+		"title": "producto3",
+		"description": "producto de prueba1",
+		"price": 1,
 		"thumbnails": [],
-		"description": "producto de prueba actualizado",
-		"price": 4,
-		"code": "producto actualizado",
+		"code": "producto3",
 		"status": true
 	},
 	{
-		"id": "fb56cade-e6b7-45be-a949-d7626ffb1125",
-		"title": "producto2",
-		"description": "producto de prueba",
-		"price": 2,
+		"id": "6497ae3f-19f2-42fb-8b01-0dbdc38ff0e8",
+		"title": "producto4",
+		"description": "producto de prueba1",
+		"price": 4,
 		"thumbnails": [],
-		"code": "producto2",
+		"code": "producto4",
+		"status": true
+	},
+	{
+		"id": "ca599a6b-fb05-4409-bfc2-7604b2fb0af4",
+		"title": "producto5",
+		"description": "producto de prueba1",
+		"price": 5,
+		"thumbnails": [],
+		"code": "producto5",
+		"status": true
+	},
+	{
+		"id": "ce69dd13-5712-4424-a9fe-e437ac494656",
+		"title": "producto6",
+		"description": "producto de prueba6",
+		"price": 6,
+		"thumbnails": [],
+		"code": "producto6",
+		"status": true
+	},
+	{
+		"id": "9f909fe1-262b-4230-b7e4-f0db074f7a2a",
+		"title": "producto7",
+		"description": "producto de prueba7",
+		"price": 7,
+		"thumbnails": [],
+		"code": "producto7",
+		"status": true
+	},
+	{
+		"id": "bc0a766b-f5d4-4eab-bfc4-da0933f80744",
+		"title": "producto8",
+		"description": "producto de prueba8",
+		"price": 8,
+		"thumbnails": [],
+		"code": "producto8",
 		"status": true
 	}
 ]

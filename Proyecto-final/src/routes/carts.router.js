@@ -1,12 +1,13 @@
 import {Router} from "express"
 import CartManager from "../classes/cartManager.js";
-import products from "./products.router.js";
+import ProductManager from "../classes/productManager.js";
 /* import ProductManager from "../classes/productManager"; */
-
 const cartManager = new CartManager('src/cart.json');
-const router =Router()
+const productManager = new ProductManager('src/products.json');
+ let products = await productManager.getProduct();
+const CartRouter =Router()
 
-router.post('/cart', async (req, res)=>{
+CartRouter .post('/cart', async (req, res)=>{
     const newCart = await cartManager.addCart();
     try {
         return res.status(201).json({data: newCart, message: `New Cart with id ${newCart.id} added to database`})
@@ -16,9 +17,9 @@ router.post('/cart', async (req, res)=>{
     }
 })
 
-router.get('/cart/:cartId', async (req, res)=>{
+CartRouter .get('/cart/:cartId', async (req, res)=>{
  try{  const {cartId } = req.params;
-    const cartFound = await cartManager.getCartById(Number(cartId));
+    const cartFound = await cartManager.getCartById(cartId);
     if(cartFound){
         res.status(201).send(cartFound)
     }else{
@@ -27,16 +28,19 @@ router.get('/cart/:cartId', async (req, res)=>{
     res.status(400).json({ error: 'No existe un producto con ese id' })
    }
 })
-router.post('/cart/:cartId/product/:productId', async (req,res)=>{
+CartRouter .post('/cart/:cartId/product/:productId', async (req,res)=>{
     try{
         const {cartId}= req.params
         const {productId}= req.params;
-        const productFound = products.find((p)=>p.id === Number(productId));
+       
+       console.log('products',products);
+        const productFound = await products.find(p => productId === p.id)
+        console.log('product found', productFound);
         if(productFound){
-            await cartManager.addProductToCart(Number(cartId),productoEncontrado)
-            res.status(201).send(productoEncontrado)
+            await cartManager.addProductToCart(cartId,productFound)
+            res.status(201).send(productFound)
         }else{
-            throw new Error ('no existe un producto con ese id')
+            throw new Error ('no existe un producto con ese id :/')
         }
 
     }
@@ -44,7 +48,7 @@ router.post('/cart/:cartId/product/:productId', async (req,res)=>{
         return res.status(400).send({error: error.message})
     }
 })
-export default router
+export default CartRouter 
 
 /* router.get();
 router.post();
