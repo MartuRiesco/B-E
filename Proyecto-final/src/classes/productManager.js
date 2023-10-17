@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { getNewId } from '../utils/utils.js';
+import { getNewId } from '../utils.js';
 class ProductManager{
     constructor(path){
        this.path = path;

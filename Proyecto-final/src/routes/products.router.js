@@ -1,6 +1,6 @@
 import {Router} from "express"
 import ProductManager from '../classes/productManager.js'
-import { getNewId } from "../utils/utils.js";
+import { getNewId } from "../utils.js";
 
 
 const productManager = new ProductManager('src/products.json');
@@ -10,6 +10,7 @@ ProductRouter.get('/products', async(req, res) => {
      const { limit } = req.query;
      if (!limit) {
         return res.status(201).send(products)
+     /*   return res.render('index', products) */
      } else {
        const numberLimit = parseInt(limit);
    
@@ -17,7 +18,9 @@ ProductRouter.get('/products', async(req, res) => {
          return res.status(400).json({ error: 'Limite invalido' });
        }else{
        const limitedProducts = products.slice(0, numberLimit);
-       return res.json(limitedProducts);}
+       return res.json(limitedProducts);
+      /* return res.render('index', limitedProducts) */
+      }
    
      }
    });

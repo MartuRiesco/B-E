@@ -1,0 +1,15 @@
+<div>
+      <p>Estos son los alimentos disponibles:</p>
+    {{#each products}}
+      <div>
+               <strong><p>Title:</strong>  {{this.title}}</p>
+               <strong>  <p>Description: </strong> {{this.description}}</p>
+                <strong> <p>Price: </strong> ${{this.price}}</p>
+               <strong> <p>status: </strong> {{this.status}}</p>
+               <strong>  <p>Code:</strong>  {{this.code}}</p>
+                <strong>  <p>Id:</strong>  {{this.id}}</p>
+        <hr>
+      </div>
+    {{/each}}
+</div>
+<script src="/js/index.js"></script>

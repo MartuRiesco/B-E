@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { getNewId } from '../utils/utils.js';
+import { getNewId } from '../utils.js';
 import { log } from 'console';
 class CartManager{
     constructor(path){
