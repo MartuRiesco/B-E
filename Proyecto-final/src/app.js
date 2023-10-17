@@ -1,6 +1,7 @@
 import express from "express"
 import handlebars from 'express-handlebars';
 import path from 'path';
+import {Server} from 'socket.io'
 import {ProductRouter, products} from "../src/routes/products.router.js"
 import CartRouter from "../src/routes/carts.router.js";
 import { __dirname } from './utils.js';
@@ -23,8 +24,11 @@ app.get('/', (req,res) => {
   const empty = products.length === 0
   res.render('home', {products, empty})
 })
-/* app.listen(8080, ()=>{
+const serverHttp = app.listen(8080, ()=>{
   console.log('servidor escuchando en puerto 8080');
-}) */
-  
- export default app
+})
+  const serverSocket= new Server(serverHttp)
+  serverSocket.on('connection', (clienteSocket) => {
+    console.log(`Nuevo cliente conectado 🎉 (${clienteSocket.id}).`);
+  })
+export default app

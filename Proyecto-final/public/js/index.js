@@ -1,1 +1,3 @@
-console.log('Hello from index.js');
+(function () {
+    const socket = io()
+})();
