@@ -1,6 +1,7 @@
 import {Router} from "express"
 import ProductManager from '../classes/productManager.js'
 import { getNewId } from "../utils.js";
+import { socketServer } from "../utils.js";
 
 
 const productManager = new ProductManager('src/products.json');
@@ -63,6 +64,7 @@ ProductRouter.get('/products', async(req, res) => {
      if (!added) {
       throw new Error(`El producto no se pudo agregar`)}
       else{
+        socketServer.emit('messages', await productManager.getProducts())
         return res.status(201).send('producto agregado', newProduct)
       }
 }
@@ -78,6 +80,7 @@ ProductRouter.get('/products', async(req, res) => {
     const productToUpdate = products.find(p => (productId === p.id))
     if(productToUpdate){
       await productManager.updateProduct(productId, update)
+      socketServer.emit('messages', await productManager.getProducts())
       res.status(201).send({message:`acutalizacion del producto de id ${productId}`})
     }else{
       res.status(400).send({message:'no se puedo actualizar el producto'})
@@ -91,13 +94,14 @@ ProductRouter.get('/products', async(req, res) => {
     const productToEliminate = products.find(p => (productId === p.id))
     if(productToEliminate){
       await productManager.deleteProduct(productId)
+      socketServer.emit('messages', await productManager.getProducts())
       res.status(201).send({message:`Se elimino el producto de id ${productId}`})
     }else{
       res.status(400).send({message:'no se puedo eliminar el producto'})
     }
   
   }catch(error){
-   return res.status(400).send({error: err.message})
+   return res.status(400).send({error: error.message})
   }
   })
  

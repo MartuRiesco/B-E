@@ -1,16 +1,11 @@
-import express from "express"
 import handlebars from 'express-handlebars';
 import path from 'path';
-import {Server} from 'socket.io'
 import {ProductRouter, products} from "../src/routes/products.router.js"
 import CartRouter from "../src/routes/carts.router.js";
-import { __dirname } from './utils.js';
+import { __dirname, socketServer, app } from './utils.js';
 
 
- const app= express();
- app.use(express.json());
- app.use(express.urlencoded({extended: true}));
- app.use(express.static(path.join(__dirname, '../public')));
+
  app.engine('handlebars', handlebars.engine());
  app.set('views', path.join(__dirname, 'views'));
  app.set('view engine', 'handlebars');
@@ -24,11 +19,15 @@ app.get('/', (req,res) => {
   const empty = products.length === 0
   res.render('home', {products, empty})
 })
-const serverHttp = app.listen(8080, ()=>{
-  console.log('servidor escuchando en puerto 8080');
+app.get('/realtimeproducts', (req,res) => {
+  const empty = products.length === 0
+  res.render('realtimeproducts', {empty})
 })
-  const serverSocket= new Server(serverHttp)
-  serverSocket.on('connection', (clienteSocket) => {
-    console.log(`Nuevo cliente conectado 🎉 (${clienteSocket.id}).`);
+socketServer.on('connection', (socket) => {
+    console.log(`Nuevo cliente conectado 🎉 (${socket.id}).`);
+    socket.emit('products', products);
+    socket.on('products', (products) => {
+      socketServer.emit('products', products);
+    });
   })
 export default app
