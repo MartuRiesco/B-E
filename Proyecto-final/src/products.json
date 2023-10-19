@@ -1,14 +1,5 @@
 [
 	{
-		"id": "ca599a6b-fb05-4409-bfc2-7604b2fb0af4",
-		"title": "producto5",
-		"description": "producto de prueba1",
-		"price": 5,
-		"thumbnails": [],
-		"code": "producto5",
-		"status": true
-	},
-	{
 		"id": "ce69dd13-5712-4424-a9fe-e437ac494656",
 		"title": "producto6",
 		"description": "producto de prueba6",

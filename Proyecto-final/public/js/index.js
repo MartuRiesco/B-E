@@ -1,7 +1,8 @@
-(function () {
+
     const socket = io()
     const render = (data) => {
         const ul = document.getElementById('ul-websocket')
+        console.log(document.getElementById('ul-websocket'));
         ul.innerHTML = ''
         //*si la lista de productos esta vacia se imprime un comentario
         if (data.length === 0) {
@@ -25,4 +26,3 @@
     socket.on('products', (data) => {
         render(data);
     })
-})();
