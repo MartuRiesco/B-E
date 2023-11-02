@@ -12,12 +12,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, '../public')));
 
-const server = http.createServer(app);
-  const socketServer = new Server(server)
-  const PORT = 8080;
-server.listen(PORT, () => {
-  console.log(`Server running in http://localhost:${PORT}/`);
-});
-
+/* const server = http.createServer(app);
+  const socketServer = new Server(server) */
   const getNewId = () => uuidv4();
-export {getNewId, socketServer, app}
+
+  export class Exception extends Error{
+    constructor(message, status){
+      super(message);
+      this.statusCode =status
+    }
+  }
+export {getNewId, /* socketServer, */ app}

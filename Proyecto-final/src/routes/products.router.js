@@ -1,7 +1,7 @@
 import {Router} from "express"
 import ProductManager from '../classes/productManager.js'
 import { getNewId } from "../utils.js";
-import { socketServer } from "../utils.js";
+/* import { socketServer } from "../utils.js"; */
 
 
 const productManager = new ProductManager('src/products.json');
