@@ -7,18 +7,19 @@
 
     formMessage.addEventListener('submit', (event) => {
         event.preventDefault();
-        const text = inputMessage.value;
-        socket.emit('new-message', { userName, text });
-        console.log('Nuevo mensaje enviado', { userName, text });
+        const message = inputMessage.value;
+        socket.emit('new-message', { userName, message });
+        console.log('Nuevo mensaje enviado', { userName, message });
         inputMessage.value = '';
         inputMessage.focus();
       });
-function updateMessages(messages){
+ function updateMessages(messages){
     logMessages.innerText = '';
     console.log('mensajes',messages);
+   
     messages.forEach((msg)  => {
         const p = document.createElement('p');
-        p.innerText = `${msg.userName}: ${msg.text}`;
+        p.innerText = `${msg.userName}: ${msg.message}`;
         logMessages.appendChild(p);
     });
 }
