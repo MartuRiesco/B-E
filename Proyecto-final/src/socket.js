@@ -1,23 +1,26 @@
 import {Server} from 'socket.io'
 import MessageManager from './dao/MessageManager.js';
-import ProductManager from './dao/MessageManager.js';
+import ProductManager from './dao/ProductManager.js';
 
 let io;
 let messages= []
+
 export const inits = (httpServer) => {
     io = new Server(httpServer)
     io.on('connection', async (socketClient)=>{
-        let productsBefore = await ProductManager.get();
-
-        let messagesBefore = await MessageManager.get();
         console.log(`Se ha conectado un nuevo cliente 🎉 (${socketClient.id})`);
 
         socketClient.emit('notification', { messages });
-        socketClient.on("addProduct", async (product) => {
-            await ProductManager.create(product);
-            let productsAfter = await ProductManager.get();
-            io.sockets.emit("listProducts", productsAfter);})
 
+        socketClient.on("addProduct", async (product) => {
+            const {title, description, price,code } = product
+            await ProductManager.create({title, description, price,code });
+           })
+           let products = await ProductManager.get()
+           socketClient.emit('products', products);
+           socketClient.on('products', (products) => {
+            io.emit('products', products);
+           });
         socketClient.broadcast.emit('new-client');
         socketClient.on('new-message',async (data)=>{
             const {userName, message} = data
@@ -25,12 +28,7 @@ export const inits = (httpServer) => {
             await MessageManager.create(data)
             io.emit('notification', {messages})
         })
-       /*  socketClient.on("user-message", async (data) => {
-           
-            let mess = await MessageManager.get();
-            console.log('mensajito',mess);
-
-            io.sockets.emit("user-message", messages);}) */
+      
 
     })
     console.log('ServerSocket funciona');
