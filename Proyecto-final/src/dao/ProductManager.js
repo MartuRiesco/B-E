@@ -30,10 +30,10 @@ return product
     static async updateById(pid, data) {
         const product = await productModel.findById(pid);
         if (!product) {
-          throw new Exception('No existe el estudiante 😨', 404);
+          throw new Exception('No existe el producto 😨', 404);
         }
         const criteria = { _id: pid };
         const operation = { $set: data };
         await productModel.updateOne(criteria, operation);
-        console.log('Estudiante actualizado correctamente 😁');
+        console.log('Producto actualizado correctamente 😁');
       }}

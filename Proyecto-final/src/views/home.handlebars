@@ -1,16 +1,28 @@
-<div>
+<div >
       <p>Estos son los productos disponibles:</p>
+      <div class="container-card">
     {{#each products}}
-      <div>
-               <strong><p>Title:</strong>  {{this.title}}</p>
+      <div  >
+             {{!--   <strong><p>Title:</strong>  </p>
                <strong>  <p>Description: </strong> {{this.description}}</p>
                 <strong> <p>Price: </strong> ${{this.price}}</p>
                <strong> <p>status: </strong> {{this.status}}</p>
-               <strong>  <p>Code:</strong>  {{this.code}}</p>
-                <strong>  <p>Id:</strong>  {{this._id}}</p>
+               <strong>  
+                <strong>  <p>Id:</strong>  {{this._id}}</p> --}}
+                <div class="card">
+  <img src="" alt="Denim Jeans" style="width:100%">
+  <h1>{{this.title}}</h1>
+  <p class="price">{{this.price}}</p>
+  <p>{{this.description}}</p>
+  <p>Code:</strong>  {{this.code}}</p>
+  <p><button>Add to Cart</button></p>
+</div>
         <hr>
+       
       </div>
     {{/each}}
+ </div>
+
 {{!-- 
 <div>
   <h1>Agregar Producto</h1>
@@ -27,3 +39,4 @@
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>
+{{!-- <script src="/css/index.css"></script> --}}

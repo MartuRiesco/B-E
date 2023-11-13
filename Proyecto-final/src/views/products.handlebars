@@ -1,0 +1,32 @@
+<div >
+   
+      <p>Estos son los productos disponibles:</p>
+      <a href="{{prevLink}}" role="button" {{#unless hasPrevPage}}disabled{{/unless}} >Anterior</a>
+<a href="{{nextLink}}" role="button" {{#unless hasNextPage}}disabled{{/unless}} >Siguiente</a>
+<a href="" role="button" class="cart-link">Ver Carrito</a>
+      <div class="container-card">
+         <div id="ul-websocket">
+    {{!-- ACA SE AGREGA LA LISTA POR WEBSOCKET --}}
+</div>
+    {{#each payload}}
+      <div  >
+ <div class="card">
+  <img src="" alt="Denim Jeans" style="width:100%">
+  <h1>{{this.title}}</h1>
+  <p class="price">{{this.price}}</p>
+  <p>{{this.description}}</p>
+  <p>{{this.category}}</p>
+  <p>Code:</strong>  {{this.code}}</p>
+  <p><button class="button addToCart" data-productid="{{this._id}}" >Add to Cart</button></p>
+</div>
+        <hr>
+       
+      </div>
+    {{/each}}
+ </div>
+ <p>Página actual: {{page}}</p>
+
+
+</div>
+ <script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

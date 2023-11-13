@@ -20,7 +20,8 @@ import chatRouter from './routes/api/chat.router.js'
   console.log(message);
   res.status(500).json({ status: 'error', message });
 });
-app.use('/api', productApiRouter, cartApiRouter)
+app.use('/', cartApiRouter)
+app.use('/',  productApiRouter,)
 app.use('/', productViewsRouter, cartViewsRouter, MessageViewsRouter)
 app.use('/', chatRouter)
 app.get('/realtimeproducts', (req,res) => {

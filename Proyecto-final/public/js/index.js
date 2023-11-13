@@ -1,9 +1,24 @@
 (function(){
+ 
     const socket = io()
-        const ul = document.getElementById('ul-websocket')
+     const div = document.getElementById('ul-websocket')
         const formProduct = document.getElementById('form-product');
 
-formProduct.addEventListener('submit', (event) => {
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('addToCart')) {
+              const pid = event.target.dataset.productid;
+              addProductToCart(pid);
+              console.log('product id',pid);
+            }
+          });
+          function addProductToCart(pid) {
+            socket.emit('addProductToCart', pid)
+          }
+          socket.on('notification', ({cartId }) => {
+            const cartLink = document.querySelector('.cart-link');
+            cartLink.href = `/carts/${cartId}`;
+        });
+/* formProduct.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const title = document.getElementById("title").value;
@@ -12,31 +27,34 @@ formProduct.addEventListener('submit', (event) => {
   const code = document.getElementById("code").value;
 
   socket.emit("addProduct", { title, description, price, code });
-});
-    const render = (data) => {
-        ul.innerHTML = ''
+}); */
+   /*  const render = (data) => {
+        div.innerHTML = '';
         //*si la lista de productos esta vacia se imprime un comentario
         if (data.length === 0) {
-            ul.innerHTML = '<h2 class="h2-home">No hay productos agregados</h2>'
+            div.innerHTML = '<h2 class="h2-home">No hay productos agregados</h2>' 
         } else {
             data.forEach(p => {
-                const html = document.createElement('li')
+                const html = document.createElement('div')
                 html.innerHTML =
-                `<p>Title: ${p.title}</p>
-                <p>Description: ${p.description}</p>
-                <p>Price: $${p.price}</p>
-                <p>Status: ${p.status}</p>
-                <p>Code: ${p.code}</p>
-                <p>Id: ${p._id}</p>`
+                ` <div class="card" >
+                <img src="" alt="Denim Jeans" style="width:100%">
+                <h1>${p.title}</h1>
+                <p class="price">${p.price}</p>
+                <p class="category">${p.category}</p>
+                <p>${p.description}</p>
+                <p>Code:</strong>  ${p.code}</p>
+                <p><button type="add" >Add to Cart</button></p>
+              </div>`
     
-                ul.append(html)
+                div.append(html)
             });
         }
     }
     
     socket.on('products', (data) => {
         render(data);
-    })
+    }) */
 
 })();
    
