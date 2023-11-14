@@ -24,6 +24,7 @@
     });
 }
 
+
 socket.on('notification', ({ messages }) => {
     updateMessages(messages);
   });

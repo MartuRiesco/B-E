@@ -8,12 +8,24 @@
             if (event.target.classList.contains('addToCart')) {
               const pid = event.target.dataset.productid;
               addProductToCart(pid);
+              Swal.fire({
+                text: 'Producto agregado 🤩',
+                toast: true,
+                position: 'top-right',
+            });
               console.log('product id',pid);
             }
           });
           function addProductToCart(pid) {
-            socket.emit('addProductToCart', pid)
+            socket.emit('addProductToCart', pid);
           }
+          socket.on('addProductToCart', () => {
+            console.log('Evento addProductToCart recibido');
+            Swal.fire({
+                text: 'Producto agregado 🤩',
+                toast: true,
+                position: 'top-right',
+            });})
           socket.on('notification', ({cartId }) => {
             const cartLink = document.querySelector('.cart-link');
             cartLink.href = `/carts/${cartId}`;

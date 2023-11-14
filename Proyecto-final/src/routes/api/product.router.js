@@ -9,8 +9,9 @@ const { page = 1, limit = 5, group, sort } = req.query;
 const opts = { page, limit, sort: { price: sort || 'asc' } };
 const criteria = {};
 if (group) {
-  criteria.group = group;
+  criteria.category = group;
 }
+console.log('group', group);
 const result = await productModel.paginate(criteria, opts);
 console.log('result', result);
 res.render('products', buildResponse({ ...result, group, sort }));

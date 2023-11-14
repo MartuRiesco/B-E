@@ -16,12 +16,15 @@ export const inits = (httpServer) => {
         socketClient.on ('addProductToCart', async (pid)=>{
             const cid = socketClient.cartId;
             await CartManager.addProductToCart(cid, pid);
+            socketClient.emit('addProductToCart');
+
             console.log('Se añadió al carrito el producto', pid);
         })
 
         socketClient.on("addProduct", async (product) => {
             const {title, description, price,code, category } = product
             await ProductManager.create({title, description, price,code, category });
+          
            })
            let products = await ProductManager.get()
            socketClient.emit('products', products);
