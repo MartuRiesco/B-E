@@ -3,7 +3,7 @@ import { Router } from 'express';
 const router = Router();
 const privateRouter = (req, res, next) =>{
     if (!req.session.user) {
-      return res.redirect('/login');
+      return res.redirect('/');
     }
     next();
   };
@@ -19,7 +19,7 @@ const privateRouter = (req, res, next) =>{
     res.render('profile', { title: 'Perfil', user: req.session.user });
   });
   
-  router.get('/login', publicRouters, (req, res) => {
+  router.get('/', publicRouters, (req, res) => {
     res.render('login', { title: 'Login' });
   });
   
