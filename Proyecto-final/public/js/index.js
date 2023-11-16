@@ -3,16 +3,11 @@
     const socket = io()
      const div = document.getElementById('ul-websocket')
         const formProduct = document.getElementById('form-product');
-
         document.addEventListener('click', (event) => {
             if (event.target.classList.contains('addToCart')) {
               const pid = event.target.dataset.productid;
               addProductToCart(pid);
-              Swal.fire({
-                text: 'Producto agregado 🤩',
-                toast: true,
-                position: 'top-right',
-            });
+            alert('se agrego al carrito')
               console.log('product id',pid);
             }
           });
@@ -21,15 +16,12 @@
           }
           socket.on('addProductToCart', () => {
             console.log('Evento addProductToCart recibido');
-            Swal.fire({
-                text: 'Producto agregado 🤩',
-                toast: true,
-                position: 'top-right',
-            });})
+          })
           socket.on('notification', ({cartId }) => {
             const cartLink = document.querySelector('.cart-link');
             cartLink.href = `/carts/${cartId}`;
         });
+        
 /* formProduct.addEventListener('submit', (event) => {
   event.preventDefault();
 

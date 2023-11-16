@@ -6,14 +6,14 @@
     <th>Cantidad</th>
     
   </tr>
-{{#each cart}}
-      {{#each this.products}}
+{{#each payload}}
         <tr>
-          <td>{{../_id}}</td>
-            <td>{{this.product}}</td> <!-- Utilizar notación de corchetes para acceder a la propiedad -->
-          <td>{{this.products.quantity}}</td>
+          <td>{{../cartId}}</td>
+            <td>{{this.product._id}}</td> <!-- Utilizar notación de corchetes para acceder a la propiedad -->
+          <td>{{this.quantity}}</td>
         </tr>
-      {{/each}}
+
+    
     {{/each }}
   </table>  
 
