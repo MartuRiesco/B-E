@@ -27,4 +27,8 @@ const privateRouter = (req, res, next) =>{
     res.render('register', { title: 'Register' });
   });
   
+  router.get('/recovery-password', publicRouters, (req, res) => {
+    res.render('recovery-password', { title: 'Recuperar Contraseña' });
+  });
+
   export default router;
