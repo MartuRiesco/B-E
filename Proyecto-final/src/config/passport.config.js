@@ -20,9 +20,10 @@ const githubOpts ={
         if (user) {
             return done(new Error('User already register 😨'));
           }
+          const hashedPassword = createHash(password);
           const newUser = await UserModel.create({
             ...req.body,
-            password: createHash(password),
+            password: hashedPassword,
           });
           done(null, newUser);
         } catch (error) {
@@ -34,10 +35,12 @@ const githubOpts ={
     passport.use('login', new LocalStrategy(opts, async (req, email, password, done) => {
         try {
           const user = await UserModel.findOne({ email });
+          console.log('user', user.password);
           if (!user) {
             return done(new Error('Correo o contraseña invalidos 😨'));
           }
-          const isPassValid = isPasswordValid(password, user);
+          const isPassValid =  isPasswordValid(password, user);
+          console.log("isPassValid",  isPassValid);
           if (!isPassValid) {
             return done(new Error('Correo o contraseña invalidos 😨'));
           }
