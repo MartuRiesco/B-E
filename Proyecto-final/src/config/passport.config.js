@@ -33,22 +33,26 @@ const githubOpts ={
     }))
 
     passport.use('login', new LocalStrategy(opts, async (req, email, password, done) => {
-        try {
-          const user = await UserModel.findOne({ email });
-          console.log('user', user.password);
-          if (!user) {
-            return done(new Error('Correo o contraseña invalidos 😨'));
-          }
-          const isPassValid =  isPasswordValid(password, user);
-          console.log("isPassValid",  isPassValid);
-          if (!isPassValid) {
-            return done(new Error('Correo o contraseña invalidos 😨'));
-          }
-          console.log('Here');
-          done(null, user);
-        } catch (error) {
-          done(new Error(`Ocurrio un error durante la autenticacion ${error.message} 😨.`));
-        }
+   try {
+    const user = await UserModel.findOne({ email });
+    console.log('user', user);
+
+    if (!user) {
+      return done(new Error('Correo o contraseña inválidos 😨'));
+    }
+
+    const isPassValid = await isPasswordValid(password, user);
+    console.log("isPassValid", isPassValid);
+
+    if (!isPassValid) {
+      return done(new Error('Correo o contraseña inválidos 😨'));
+    }
+
+    console.log('Here');
+    done(null, user);
+  } catch (error) {
+    done(new Error(`Ocurrió un error durante la autenticación ${error.message} 😨.`));
+  }
       }));
       passport.use('github', new GithubStrategy(githubOpts, async (accessToken, refreshToken, profile, done) =>{
         console.log('profile', profile);

@@ -14,10 +14,15 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, '../public')));
 export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 /* export const isPasswordValid = (password, user) => bcrypt.compare(password, user.password) */
-export const isPasswordValid = (password, user) => {
-  console.log('Input Password:', password);
-  console.log('Stored Password:', user.password);
-  return  bcrypt.compareSync(password, user.password);
+export const isPasswordValid =  (password, user) => {
+  try {
+    console.log('Input Password:', password);
+    console.log('Stored Password:', user.password);
+    return  bcrypt.compareSync(password, user.password);
+  } catch (error) {
+    console.error('Error comparing passwords:', error);
+    return false;
+  }
 };
 /* const server = http.createServer(app);
   const socketServer = new Server(server) */
