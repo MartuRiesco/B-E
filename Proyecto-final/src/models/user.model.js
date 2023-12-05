@@ -7,7 +7,20 @@ const userSchema = new mongoose.Schema({
   age: Number,
   password: String,
   provider: String,
-  rol: { type: String, default: 'user',  enum: ['user', 'seller', 'admin']  }
+  rol: { type: String, default: 'user',  enum: ['user', 'seller', 'admin']  },
+  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
+  jwtToken: String,
 }, { timestamps: true });
+userSchema.pre('find', function() {
+  this.populate('cart');
+});
+userSchema.post('save', async function (doc) {
+  if (!doc.cart) {
+    const Cart = mongoose.model('Cart');
+    const cart = await Cart.create({ user: doc._id, products: [] });
+    doc.cart = cart._id;
+    await doc.save();
+  }
+});
 
 export default mongoose.model('User', userSchema);

@@ -5,7 +5,20 @@ export default class CartManager{
     static  get(query={}){
         const criteria={}
         return cartModel.find(criteria)
+    }
+    static async getOrCreateCart(userId) {
+      
+        const existingCart = await cartModel.findOne({ user: userId });
+    
+        if (existingCart) {
+       
+          return existingCart;
+        } else {
+    
+          const newCart = await cartModel.create({ user: userId, products: [] });
+          return newCart;
         }
+      }
         static  async create( data){
     const cart = await cartModel.create(data);
     console.log('Carrito creado con exito');
@@ -19,6 +32,7 @@ export default class CartManager{
     }
     return cart
         }
+
         static async deleteById(cid){
             const cart = await cartModel.findById(cid)
             if (!cart){

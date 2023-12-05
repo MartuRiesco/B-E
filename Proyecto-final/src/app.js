@@ -47,7 +47,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter );
 /* app.use('/api', sessionRouter); */
-app.use('/api', authRouter)
+app.use('/', authRouter)
 app.use('/', cartApiRouter)
 app.use('/',  productApiRouter,)
 app.use('/', productViewsRouter, cartViewsRouter, MessageViewsRouter)

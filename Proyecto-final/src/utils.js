@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import passport from 'passport';
 import express from "express"
 import { Server } from "socket.io";
+import { log } from 'console';
 export const __filename = fileURLToPath(import.meta.url);
 
 export const __dirname = path.dirname(__filename);
@@ -28,7 +29,7 @@ export const isPasswordValid =  (password, user) => {
 };
 export const JWT_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
 
-export const tokenGenerator = (user) => {
+export const tokenGenerator = (user, cartId) => {
   const {
     _id: id,
     first_name,
@@ -42,9 +43,13 @@ export const tokenGenerator = (user) => {
     last_name,
     email,
     rol,
+    cartId
   };
-  return JWT.sign(payload, JWT_SECRET, { expiresIn: '30m' });
-}
+  const token = JWT.sign(payload, JWT_SECRET, { expiresIn: '30m' });
+  console.log('token', token);
+ return token
+ } 
+
 
 export const verifyToken = (token) => {
   return new Promise((resolve, reject) => {
@@ -61,6 +66,8 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     if (error) {
       return next(error);
     }
+    console.log('Received Token:', req.headers.authorization); 
+    console.log('payload', payload);
     if (!payload) {
       return res.status(401).json({ message: info.message ? info.message : info.toString() });
     }

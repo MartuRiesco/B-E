@@ -27,7 +27,7 @@ const router = Router();
     res.render('register', { title: 'Register' });
   });
   router.get('/logout', (req, res) => {
-    res.clearCookie('access_token').redirect('login')
+    res.clearCookie('access_token').redirect('/')
 });
   router.get('/recovery-password',/*  publicRouters, */ (req, res) => {
     res.render('recovery-password', { title: 'Recuperar Contraseña' });
