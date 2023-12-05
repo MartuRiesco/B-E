@@ -13,9 +13,9 @@ console.log('newUser', newUser);
  res.redirect('/'); 
 }) */
 
-router.post('/sessions/register',passport.authenticate('register', {failureRedirect: '/register'}), (req, res)=>{
+/* router.post('/sessions/register',passport.authenticate('register', {failureRedirect: '/register'}), (req, res)=>{
   res.redirect('/'); 
-})
+}) */
 
 /* router.post('/sessions/login', async (req, res) => {
     const { body: { email, password } } = req;
@@ -40,7 +40,7 @@ router.post('/sessions/register',passport.authenticate('register', {failureRedir
     req.session.user = { first_name, last_name, email };
     res.redirect(`/products`);
   }); */
-  router.post('/sessions/login', passport.authenticate('login', { failureRedirect: '/' }), (req, res) => {
+/*   router.post('/sessions/login', passport.authenticate('login', { failureRedirect: '/' }), (req, res) => {
     req.session.user = req.user;
     res.redirect('/products');
   });
@@ -64,7 +64,7 @@ router.post('/sessions/register',passport.authenticate('register', {failureRedir
     req.session.destroy((error) => {
       res.redirect('/');
     });
-  });
+  }); */
 
    
 export default router;

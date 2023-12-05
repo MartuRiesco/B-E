@@ -1,6 +1,7 @@
 import handlebars from 'express-handlebars';
 import path from 'path';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import {ProductRouter, products} from "../src/routes/products.router.js"
 import { __dirname, /* socketServer, */ app } from './utils.js';
 import productApiRouter from './routes/api/product.router.js'
@@ -10,7 +11,8 @@ import cartViewsRouter from './routes/views/carts.router.js'
 import MessageViewsRouter from './routes/views/chats.router.js'
 import chatRouter from './routes/api/chat.router.js'
 import indexRouter from './routes/api/index.router.js'
-import sessionRouter from './routes/api/sessions.router.js'
+/* import sessionRouter from './routes/api/sessions.router.js' */
+import authRouter from './routes/api/auth.router.js';
 import{ init as initPassportConfig }from './config/passport.config.js'
 import expressSession from 'express-session';
 import MongoStore from 'connect-mongo';
@@ -26,7 +28,10 @@ const SESSION_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
   console.log(message);
   res.status(500).json({ status: 'error', message });
 });
-app.use(expressSession({
+const COOKIE_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
+
+app.use(cookieParser(COOKIE_SECRET));
+/* app.use(expressSession({
   secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -35,15 +40,14 @@ app.use(expressSession({
     mongoOptions: {},
     ttl: 60,
   })
-}))
-
+})) */
 initPassportConfig()
 app.use(passport.initialize());
-app.use(passport.session());
+/* app.use(passport.session()); */
 
-app.use('/', indexRouter);
-app.use('/api', sessionRouter);
-
+app.use('/', indexRouter );
+/* app.use('/api', sessionRouter); */
+app.use('/api', authRouter)
 app.use('/', cartApiRouter)
 app.use('/',  productApiRouter,)
 app.use('/', productViewsRouter, cartViewsRouter, MessageViewsRouter)

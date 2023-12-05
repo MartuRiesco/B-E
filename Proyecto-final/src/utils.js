@@ -2,7 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import http from 'http'
 import bcrypt from 'bcrypt'
+import JWT from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
+import passport from 'passport';
 import express from "express"
 import { Server } from "socket.io";
 export const __filename = fileURLToPath(import.meta.url);
@@ -24,6 +26,62 @@ export const isPasswordValid =  (password, user) => {
     return false;
   }
 };
+export const JWT_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
+
+export const tokenGenerator = (user) => {
+  const {
+    _id: id,
+    first_name,
+    last_name,
+    email,
+    rol,
+  } = user;
+  const payload = {
+    id,
+    first_name,
+    last_name,
+    email,
+    rol,
+  };
+  return JWT.sign(payload, JWT_SECRET, { expiresIn: '30m' });
+}
+
+export const verifyToken = (token) => {
+  return new Promise((resolve, reject) => {
+    JWT.verify(token, JWT_SECRET, (error, payload) => {
+      if (error) { 
+        return reject(error)
+      }
+      resolve(payload);
+    });
+  });
+}
+export const authenticationMiddleware = (strategy) => (req, res, next) => {
+  passport.authenticate(strategy, function(error, payload, info) {
+    if (error) {
+      return next(error);
+    }
+    if (!payload) {
+      return res.status(401).json({ message: info.message ? info.message : info.toString() });
+    }
+    req.user = payload;
+    next();
+  })(req, res, next);
+};
+
+export const authorizationMiddleware = (roles) => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const {rol: userRole} = req.user;
+  if (!roles.includes(userRole)) {
+    return res.status(403).json({ message: 'No premissions' });
+  }
+  next();
+}
+
+
 /* const server = http.createServer(app);
   const socketServer = new Server(server) */
   const getNewId = () => uuidv4();

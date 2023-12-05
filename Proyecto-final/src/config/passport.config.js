@@ -3,18 +3,36 @@ import { Strategy as LocalStrategy } from "passport-local";
 import GithubStrategy from 'passport-github2'
 import { createHash, isPasswordValid } from "../utils.js";
 import UserModel from "../models/user.model.js";
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+  import { JWT_SECRET } from '../utils.js';
+  
 
-
-const opts ={
+/* const opts ={
     usernameField : 'email',
     passReqToCallback: true,
-}
+} */
 const githubOpts ={ 
   clientID:  'Iv1.a164544df8fe1231',
   clientSecret: 'c8ab7905640f32e0093b9fb65245e5be0daa157f',
   callbackURL: "http://localhost:8080/api/sessions/github/callback"}
 
- export const init = () =>{
+  const opts = {
+    jwtFromRequest: ExtractJwt.fromExtractors([coookieExtractor]),
+    secretOrKey: JWT_SECRET,
+  };
+  function coookieExtractor(req) {
+    let token = null;
+    if (req && req.signedCookies) {
+      token = req.signedCookies['access_token'];
+    }
+    return token;
+  }  
+  export const init = () => {
+    passport.use('jwt', new JwtStrategy(opts, (payload, done) => {
+      return done(null, payload);
+    }));
+  };
+ /* export const init = () =>{
     passport.use('register', new LocalStrategy (opts,  async (req, email, password, done)=>{
        try{ const user = await UserModel.findOne({email})
         if (user) {
@@ -81,4 +99,4 @@ const githubOpts ={
         const user = await UserModel.findById(uid);
         done(null, user);
       });
-}
+} */

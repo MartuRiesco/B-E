@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   age: Number,
   password: String,
   provider: String,
-  rol: { type: String, default: "user" }
+  rol: { type: String, default: 'user',  enum: ['user', 'seller', 'admin']  }
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);

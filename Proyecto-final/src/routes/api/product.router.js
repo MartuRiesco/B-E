@@ -2,16 +2,18 @@ import { Router } from "express";
 import ProductManager from "../../dao/ProductManager.js";
 import productModel from "../../models/product.model.js";
 import userModel from "../../models/user.model.js";
+import passport from 'passport';
+import { authenticationMiddleware, authorizationMiddleware  } from "../../utils.js";
 
 const router = Router()
  
-router.get('/products', async(req, res)=>{
+router.get('/products', authenticationMiddleware('jwt'),
+async (req, res) => {
 const { page = 1, limit = 5, group, sort } = req.query;
 const opts = { page, limit, sort: { price: sort || 'asc' } };
 const criteria = {};
-const { user } = req.session;
-  
-if (!user) {
+const { first_name, last_name, rol } = req.user;
+/* if (!user) {
   return res.status(401).send('Usuario no autenticado 😨.');
 } 
 let userData
@@ -27,14 +29,12 @@ else{  userData = await userModel.findOne({ email: user.email });
 
 if (!userData) {
   return res.status(404).send('Usuario no encontrado 😨.');
-}}
-const { first_name, last_name, rol}= userData
+}} */
+
 if (group) {
   criteria.category = group;
 }
-console.log('group', group);
 const result = await productModel.paginate(criteria, opts);
-console.log('result', result);
 res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, rol}));
 });
 const buildResponse = (data) => {
@@ -55,7 +55,7 @@ const buildResponse = (data) => {
   };
 };
 
-router.get('/products/:pid', async(req, res)=>{
+router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
     try {
         const {params:{pid}}= req
     const product = await ProductManager.getById(pid)
@@ -65,10 +65,10 @@ router.get('/products/:pid', async(req, res)=>{
     } 
     })
 
-router.post('/products', async(req, res)=>{
+router.post('/products', authorizationMiddleware('admin'),  async(req, res)=>{
         const {body}= req
-        const product = await ProductManager.create(body)
-        res.status(201).json(product)
+         await ProductManager.create(body)
+        res.render('realTimeProducts', {title: 'Registro de productos'})
         })
 
         router.put('/products/:pid', async (req, res) => {
@@ -81,7 +81,7 @@ router.post('/products', async(req, res)=>{
             }
           });
 
-            router.delete('/products/:pid', async (req, res) => {
+            router.delete('/products/:pid', authorizationMiddleware('admin'), async (req, res) => {
                 try {
                   const { params: { pid } } = req;
                   await ProductManager.deleteById(pid);

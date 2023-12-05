@@ -1,10 +1,12 @@
 import { Router } from "express";
 import CartManager from "../../dao/CartManager.js";
+import { authenticationMiddleware, authorizationMiddleware } from "../../utils.js";
+import CartModel from "../../models/cart.model.js";
+
 const router = Router()
 
-router.get('/carts', async(req, res)=>{
-    const {query={}}= req
-    const carts = await CartManager.get(query)
+router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('user'), async(req, res)=>{
+  const carts = await CartModel.find({}).populate('user').populate('products.product');
     res.status(200).json(carts)
     })
     
@@ -31,7 +33,7 @@ router.get('/carts', async(req, res)=>{
         })
         const buildResponse = (cid, data) => {
           const payload = data.products.map(product => product.toJSON())
-            console.log("payload", payload)
+            console.log('payload', payload)
             return {
                 cartId: cid,
                 payload
