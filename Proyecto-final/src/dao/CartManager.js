@@ -69,7 +69,10 @@ export default class CartManager{
             }else{
                 throw new Exception('No existe ese producto dentro del carrito')
             }
-            await cartModel.updateOne({_id:cid}, cart)
+            await cart.save();
+
+            return cart;
+          /*   await cartModel.updateOne({_id:cid}, cart) */
         }
 
         static async updateById(cid, data) {

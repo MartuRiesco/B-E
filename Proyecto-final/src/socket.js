@@ -10,9 +10,9 @@ export const inits = (httpServer) => {
     io = new Server(httpServer)
     io.on('connection', async (socketClient)=>{
         console.log(`Se ha conectado un nuevo cliente 🎉 (${socketClient.id})`);
-       /*  const cart = await CartManager.create();
-        socketClient.cartId = cart._id; */
-        socketClient.emit('notification', { messages, /* cartId: cart._id */ });
+        const cart = await CartManager.getOrCreateCart();
+        socketClient.cartId = cart._id;
+        socketClient.emit('notification', { messages, cartId: cart._id });
         socketClient.on ('addProductToCart', async (pid)=>{
             const cid = socketClient.cartId;
             await CartManager.addProductToCart(cid, pid);

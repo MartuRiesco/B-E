@@ -36,8 +36,9 @@ router.post('/auth/register', async (req, res) => {
     age,
     password: createHash(password),
   });
-  const Cart = mongoose.model('Cart');
-  const cart = await Cart.create({ user: user._id, products: [] });
+  const cart = await CartManager.getOrCreateCart(user._id);
+  /* const Cart = mongoose.model('Cart'); */
+  /* const cart = await Cart.create({ user: user._id, products: [] }); */
  user.cart = cart._id;
   await user.save();
   const token = tokenGenerator(user, user.cart);
@@ -49,7 +50,6 @@ router.post('/auth/register', async (req, res) => {
 router.post('/auth/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await UserModel.findOne({ email });
-  const Cart = mongoose.model('Cart');
   const cart = await CartManager.getOrCreateCart(user._id);
   if (!user) {
     return res.status(401).json({ message: 'Correo o contraseña invaldos 😨' });

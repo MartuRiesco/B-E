@@ -66,6 +66,7 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     if (error) {
       return next(error);
     }
+    console.log('Received Headers:', req.headers);
     console.log('Received Token:', req.headers.authorization); 
     console.log('payload', payload);
     if (!payload) {
