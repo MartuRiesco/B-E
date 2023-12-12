@@ -2,6 +2,7 @@ import {Server} from 'socket.io'
 import MessageManager from './dao/MessageManager.js';
 import ProductManager from './dao/ProductManager.js';
 import CartManager from './dao/CartManager.js';
+import CartController from './controller/cart.controller.js';
 
 let io;
 let messages= []

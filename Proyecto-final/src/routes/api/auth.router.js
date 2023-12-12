@@ -4,6 +4,7 @@ import { createHash, isPasswordValid, tokenGenerator } from "../../utils.js";
 import CartManager from '../../dao/CartManager.js'
 import mongoose from 'mongoose';
 import cartModel from '../../models/cart.model.js';
+import CartController from '../../controller/cart.controller.js';
 
 
 const router = Router();
@@ -49,8 +50,11 @@ router.post('/auth/register', async (req, res) => {
 
 router.post('/auth/login', async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, 'email');
   const user = await UserModel.findOne({ email });
+  console.log('user', user);
   const cart = await CartManager.getOrCreateCart(user._id);
+  console.log(cart, 'cart');
   if (!user) {
     return res.status(401).json({ message: 'Correo o contraseña invaldos 😨' });
   }
@@ -59,6 +63,7 @@ router.post('/auth/login', async (req, res) => {
     return res.status(401).json({ message: 'Correo o contraseña invaldos 😨' });
   }
   const token = tokenGenerator(user, cart._id);
+  console.log('token tok', token);
   res
     .cookie('access_token', token, { maxAge: 1000*60*30, httpOnly: true, signed: true })
     .status(200)

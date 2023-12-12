@@ -17,8 +17,9 @@ import{ init as initPassportConfig }from './config/passport.config.js'
 import expressSession from 'express-session';
 import MongoStore from 'connect-mongo';
 import { URI } from './db/mongodb.js';
+import config from './config.js';
 
-const SESSION_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
+const SESSION_SECRET =  config.sessionSecret/* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
 
  app.engine('handlebars', handlebars.engine());
  app.set('views', path.join(__dirname, 'views'));
@@ -28,7 +29,7 @@ const SESSION_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
   console.log(message);
   res.status(500).json({ status: 'error', message });
 });
-const COOKIE_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
+const COOKIE_SECRET = config.cookeSecret /* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
 
 app.use(cookieParser(COOKIE_SECRET));
 /* app.use(expressSession({

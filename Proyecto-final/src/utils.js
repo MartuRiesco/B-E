@@ -8,6 +8,7 @@ import passport from 'passport';
 import express from "express"
 import { Server } from "socket.io";
 import { log } from 'console';
+import config from './config.js';
 export const __filename = fileURLToPath(import.meta.url);
 
 export const __dirname = path.dirname(__filename);
@@ -27,7 +28,7 @@ export const isPasswordValid =  (password, user) => {
     return false;
   }
 };
-export const JWT_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
+export const JWT_SECRET =  config.jwtSecret/* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
 
 export const tokenGenerator = (user, cartId) => {
   const {
