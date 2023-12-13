@@ -12,17 +12,19 @@ export default class CartDAO {
       const newCart = await CartModel.create({ user: userId, products: [] });
       return newCart;
     }}
-    static async getById(cartId) {
+    static async getById(cid, populate = false) {
       try {
-        const cart = await CartModel.findById(cartId).populate('products.product');
-        if (!cart) {
-          throw new Error(`Carrito con ID ${cartId} no encontrado`);
+        const cart = await CartModel.findOne({ _id: cid });
+        console.log("populate", populate);
+        if (populate) {
+          return await cart.populate("products.product");
         }
         return cart;
       } catch (error) {
-        console.error(error.message);
-        throw error;
-      }}
+        throw new Exception(`Cart with id "${cid}" not found`, 404);
+      }
+    }
+  
 
   static async create(data) {
     return CartModel.create(data);

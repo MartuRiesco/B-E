@@ -1,4 +1,5 @@
 import CartManager from '../dao/CartManager.js';
+import CartsService from '../services/cart.service.js';
 
 export default class CartController {
     static async getAllCarts(req, res) {
@@ -30,31 +31,13 @@ export default class CartController {
       }
     }
   
-    static async getCartById(req, res) {
-      const { cid } = req.params;
-      try {
-        console.log('cid', cid);
-        const cart = await CartManager.getById(cid);
-        // Asegurarse de que 'cart' esté definido antes de intentar acceder a sus propiedades
-        if (!cart) {
-          console.log(`Carrito ID no encontrado`);
-          return res.status(404).json({ error: 'Carrito no encontrado' });
-        }
-    
-        console.log(`Carrito ID: ${cart}`);
-    
-        // Verificar si 'cart.products' está definido antes de intentar acceder a él
-        if (cart.products) {
-          console.log('Productos en el carrito:', cart.products);
-        } else {
-          console.log('El carrito no tiene productos.');
-        }
-    
-        res.status(200).json(cart);
-      } catch (error) {
-        console.log(`Error al obtener el carrito por ID: ${error.message}`);
-        res.status(500).json({ error: 'Error interno del servidor' });
-      }    }
+    static async getCartById(pid) {
+      const cart = await CartsService.findById(pid);
+    if (!cart) {
+      throw new Error(`Id del carrito no fue encontrado ${pid} 😨`);
+    }
+    return cart;
+  }
     static async deleteCartById(req, res) {
         try {
           const { cid } = req.params;

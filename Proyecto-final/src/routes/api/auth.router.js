@@ -27,6 +27,7 @@ router.post('/auth/register', async (req, res) => {
     return res.status(400).json({ message: 'Todos los campos son requeridos 😨' });
   }
   let user = await UserModel.findOne({ email });
+  console.log('user', user);
   if (user) {
     return res.status(400).json({ message: 'Correo ya registrado 😨. Intenta recuperar tu contraseña 😁.' });
   }
