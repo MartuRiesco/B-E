@@ -23,8 +23,8 @@ export const inits = (httpServer) => {
         })
 
         socketClient.on("addProduct", async (product) => {
-            const {title, description, price,code, category } = product
-            await ProductManager.create({title, description, price,code, category });
+            const {title, description, price,code, category, stock } = product
+            await ProductManager.create({title, description, price,code, category, stock });
           
            })
            let products = await ProductManager.get()

@@ -12,12 +12,13 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
   const { page = 1, limit = 5, group, sort } = req.query;
   const opts = { page, limit, sort: { price: sort || 'asc' } };
   const criteria = {};
-  const { first_name, last_name, rol } = req.user;
+  const { first_name, last_name, role } = req.user;
   if (group) {
     criteria.category = group;
   }
   const result = await productModel.paginate(criteria, opts);
-  res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, rol}));
+  console.log('rol', req.user);
+  res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role}));
 } catch (error) {
   console.log('Ah ocurrido un error durante la busqueda de productos 😨');
   next(error);
@@ -33,9 +34,10 @@ const buildResponse = (data) => {
     page: data.page,
     userName: data.first_name,
     userLastName: data.last_name,
-    userRol:data.rol,
+    userRol:data.role,
     hasPrevPage: data.hasPrevPage,
     hasNextPage: data.hasNextPage,
+    chatLink:`http://localhost:8080/chat`,
     prevLink: data.hasPrevPage ? `http://localhost:8080/products?limit=${data.limit}&page=${data.prevPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
     nextLink: data.hasNextPage ? `http://localhost:8080/products?limit=${data.limit}&page=${data.nextPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
   };
@@ -80,17 +82,21 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
         res.status(error.statusCode|| 500).json({message: error.message})
     } 
     })
-router.post('/products', authorizationMiddleware('admin'),  async(req, res)=>{
-  try { const {body}= req
-         await ProductsController.create(body)
-         alert('se creo con exito el producto')
-        res.render('realTimeProducts', {title: 'Registro de productos'})
-        } catch (error) {
-          console.log('Ah ocurrido un error durante la creacion del producto 😨');
-          next(error);
-        }})
-
-        router.put('/products/:pid', async (req, res) => {
+    router.post('/products', authorizationMiddleware('admin'), async (req, res, next) => {
+      try {
+        const { body } = req;
+        console.log('req.user.role', req.user.role);
+        if (req.user.role !== 'admin') {
+          return res.status(403).json({ message: 'No tiene permisos para crear productos' });
+        }
+            await ProductsController.create(body);
+        res.status(201).json({ message: 'Producto creado con éxito' });
+      } catch (error) {
+        console.log('Ha ocurrido un error durante la creación del producto 😨', error);
+        next(error);
+      }
+    });
+        router.put('/products/:pid',authorizationMiddleware('admin'), async (req, res) => {
             try {
               const { params: { pid }, body } = req;
               await ProductsController.updateById(pid, body);

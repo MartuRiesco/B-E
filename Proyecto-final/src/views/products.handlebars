@@ -1,11 +1,13 @@
 <div >
   <h2>Bienvenid@ {{userName}} {{userLastName}}</h2>
-  <h3>Rol: {{userRol}}</h3>
+  <h3 id="rol">Rol: {{userRol}}</h3>
    <a href="/logout" role="button">Logout</a>
-      <p>Estos son los productos disponibles:</p>
       <a href="{{prevLink}}" role="button" {{#unless hasPrevPage}}disabled{{/unless}} >Anterior</a>
 <a href="{{nextLink}}" role="button" {{#unless hasNextPage}}disabled{{/unless}} >Siguiente</a>
 <a href="" role="button" class="cart-link">Ver Carrito</a>
+<a href={{chatLink}} role="button"> Ir al chat</a>
+<hr>
+          <p>Estos son los productos disponibles:</p>
       <div class="container-card">
          <div id="ul-websocket">
     {{!-- ACA SE AGREGA LA LISTA POR WEBSOCKET --}}
@@ -18,8 +20,9 @@
   <p class="price">{{this.price}}</p>
   <p>{{this.description}}</p>
   <p>{{this.category}}</p>
+   <p>{{this.stock}}</p>
   <p>Code:</strong>  {{this.code}}</p>
-  <p><button class="button addToCart" data-productid="{{this._id}}" >Add to Cart</button></p>
+  <p><button class="button addToCart" id="add"  data-productid="{{this._id}}" >Add to Cart</button></p>
 </div>
         <hr>
        
@@ -28,7 +31,21 @@
  </div>
  <p>Página actual: {{page}}</p>
 
+<div><h1>Agregar Producto</h1>
+  <form id="form-product">
+ <input type="text" id="title" placeholder="title" required>
+ <input type="text" id="description" placeholder="description" required>
+  <input type="text" id="category" placeholder="category" required>
+  <input type="text" id="stock" placeholder="stock" required>
+ <input type="number" id="price" placeholder="price" required>
+ <input type="text" id="code" placeholder="code" required>
+  <input type="submit" value="enviar">
+</form>
+</div> </div>
 
 </div>
  <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>
+<script>
+  var userRol = "{{userRol}}";
+</script>

@@ -1,15 +1,18 @@
 (function(){
  
     const socket = io()
-     const div = document.getElementById('ul-websocket')
+     const div = document.getElementById('ul-websocket');
         const formProduct = document.getElementById('form-product');
         document.addEventListener('click', (event) => {
-            if (event.target.classList.contains('addToCart')) {
+          if (event.target.classList.contains('addToCart')) {
+            if (userRol === 'user') {
               const pid = event.target.dataset.productid;
               addProductToCart(pid);
-            alert('se agrego al carrito')
-              console.log('product id',pid);
-            }
+              alert('Se agregó al carrito');
+              console.log('Product ID', pid);
+            } else {
+              alert('Solo los usuarios pueden agregar al carrito');
+            }}
           });
           function addProductToCart(pid) {
             socket.emit('addProductToCart', pid);
@@ -20,7 +23,26 @@
           socket.on('notification', ({cartId }) => {
             const cartLink = document.querySelector('.cart-link');
             cartLink.href = `/carts/${cartId}`;
+        }); 
+         formProduct.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const title = document.getElementById("title").value;
+          const description = document.getElementById("description").value;
+          const price = document.getElementById("price").value;
+          const code = document.getElementById("code").value;
+          const category = document.getElementById("category").value;
+          const stock = document.getElementById("stock").value;
+
+          if (userRol !== 'admin') {
+            alert('No tiene permisos para crear productos');
+            return;
+          }
+          alert('producto agregado correctamente')
+        
+          socket.emit("addProduct", { title, description, price, code, category, stock });
+          
         });
+  
         
 /* formProduct.addEventListener('submit', (event) => {
   event.preventDefault();

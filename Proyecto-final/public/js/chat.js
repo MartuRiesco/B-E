@@ -1,6 +1,5 @@
 (function(){
     const  socket= io();
-    let userName
     const formMessage = document.getElementById('form-message');
     const inputMessage = document.getElementById('input-message');
     const logMessages = document.getElementById('log-messages');
@@ -8,6 +7,10 @@
     formMessage.addEventListener('submit', (event) => {
         event.preventDefault();
         const message = inputMessage.value;
+        if (userRol !== 'user') {
+          alert('Solo los usuarios pueden escribir mensajes');
+          return;
+      }
         socket.emit('new-message', { userName, message });
         console.log('Nuevo mensaje enviado', { userName, message });
         inputMessage.value = '';
@@ -44,7 +47,7 @@ socket.on('notification', ({ messages }) => {
   Swal.fire({
     title:'Identificación',
     input:'text',
-    inputLabel:'Ingrese su mail',
+    inputLabel:'Ingrese su nombre de usuario',
     allowOutsideClick: false,
     inputValidator: (value)=>{
         if(!value){
@@ -52,8 +55,9 @@ socket.on('notification', ({ messages }) => {
         }
     }
   })
-  .then((result)=>{
+  .then((result)=>{ 
   userName = result.value.trim()
+  
     console.log(`Bienvenid@ ${userName}`);
   });
 

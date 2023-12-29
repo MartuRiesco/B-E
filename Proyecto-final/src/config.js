@@ -9,4 +9,11 @@
     jwtSecret: process.env.JWT_SECRET,
     cookeSecret: process.env.COOKE_SECRET,
     sessionSecret: process.env.SESSION_SECRET,
+    userEmail: process.env.GMAIL_USER,
+    userPass: process.env.GMAIL_PASS,
+    adminName:process.env.ADMIN_NAME,
+    adminLastname: process.env.ADMIN_LASTNAME,
+    adminEmail: process.env.ADMIN_EMAIL,
+    adminPassword: process.env.ADMIN_PASSWORD,
+    adminRole: process.env.ADMIN_ROLE,
   }

@@ -36,14 +36,14 @@ export const tokenGenerator = (user, cartId) => {
     first_name,
     last_name,
     email,
-    rol,
+    role,
   } = user;
   const payload = {
     id,
     first_name,
     last_name,
     email,
-    rol,
+    role: user.role,
     cartId
   };
   const token = JWT.sign(payload, JWT_SECRET, { expiresIn: '30m' });
@@ -67,8 +67,6 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     if (error) {
       return next(error);
     }
-    console.log('Received Headers:', req.headers);
-    console.log('Received Token:', req.headers.authorization); 
     console.log('payload', payload);
     if (!payload) {
       return res.status(401).json({ message: info.message ? info.message : info.toString() });
@@ -77,23 +75,42 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     next();
   })(req, res, next);
 };
-
-export const authorizationMiddleware = (roles) => (req, res, next) => {
+/* export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
+ 
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  const {rol: userRole} = req.user;
-  if (!roles.includes(userRole)) {
-    return res.status(403).json({ message: 'No premissions' });
+  const { role: userRole } = req.user;
+  if (userRole !== requiredRole) {
+    return res.status(403).json({ message: 'No permissions' });
   }
+
   next();
-}
+}; */
+export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
+  console.log('user rol', req.user);
+  if (!req.user) {
+    console.log('No hay usuario autenticado');
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const { role: userRole } = req.user;
+  console.log('Rol del usuario:', userRole);
+  console.log('Rol requerido:', requiredRole);
+
+  if (userRole.toLowerCase() !== requiredRole.toLowerCase()) {
+    console.log('No tiene permisos');
+    return res.status(403).json({ message: 'No permissions' });
+  }
+
+  next();
+};
 
 
 /* const server = http.createServer(app);
   const socketServer = new Server(server) */
-  const getNewId = () => uuidv4();
+   const getNewId = () => uuidv4();
 
   export class Exception extends Error{
     constructor(message, status){
