@@ -7,7 +7,7 @@
     
   </tr>
 {{#each payload}}
-        <tr>
+        <tr class="product-row" data-product-id="{{this.product}}">
           <td>{{../cartId}}</td>
             <td>{{this.product}}</td> 
           <td>{{this.quantity}}</td>
@@ -16,6 +16,10 @@
     
     {{/each }}
   </table>  
+  <form action="/carts/{{cartId}}/purchase" method="POST">
+    <button type="submit">Finalizar Compra</button>
+  </form>
  
 <a href="/products" role="button">Volver a los productos</a>
-</div>
+</div><script src="/socket.io/socket.io.js"></script>
+<script src="/js/cart.js"></script>
