@@ -13,6 +13,7 @@ import chatRouter from './routes/api/chat.router.js'
 import indexRouter from './routes/api/index.router.js'
 /* import sessionRouter from './routes/api/sessions.router.js' */
 import authRouter from './routes/api/auth.router.js';
+import userRouter from './routes/api/user.router.js'
 import{ init as initPassportConfig }from './config/passport.config.js'
 import expressSession from 'express-session';
 import MongoStore from 'connect-mongo';
@@ -26,7 +27,7 @@ const SESSION_SECRET =  config.sessionSecret/* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@'
  app.set('view engine', 'handlebars');
  app.use((error, req, res, next) => {
   const message = `😨 Ah ocurrido un error desconocido: ${error.message}`;
-  console.log(message);
+  /* console.log(message); */
   res.status(500).json({ status: 'error', message });
 });
 const COOKIE_SECRET = config.cookeSecret /* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
@@ -51,7 +52,7 @@ app.use('/', indexRouter );
 app.use('/', authRouter)
 app.use('/', cartApiRouter)
 app.use('/',  productApiRouter,)
-app.use('/', productViewsRouter, cartViewsRouter, MessageViewsRouter)
+app.use('/', productViewsRouter, cartViewsRouter, MessageViewsRouter, userRouter)
 app.use('/', chatRouter)
 app.get('/realtimeproducts', (req,res) => {
   const empty = products.length === 0

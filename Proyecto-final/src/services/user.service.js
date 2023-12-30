@@ -1,8 +1,9 @@
-import { userRepository } from "../repository/index.js";
+import  {userRepository}  from "../repository/index.js";
 
 export default class UserService {
-    static create(data) {
-      return userRepository.create(data);
+    static async create(data) {
+      console.log('data servce', data);
+      return await userRepository.create(data);
     }
   
     static get(criteria = {}) {

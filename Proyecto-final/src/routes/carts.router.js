@@ -33,7 +33,7 @@ CartRouter .post('/cart/:cartId/product/:productId', async (req,res)=>{
         const {cartId}= req.params
         const {productId}= req.params;
        
-       console.log('products',products);
+       /* console.log('products',products); */
         const productFound = await products.find(p => productId === p.id)
         console.log('product found', productFound);
         if(productFound){

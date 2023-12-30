@@ -2,6 +2,7 @@ import UserModel from "../models/user.model.js";
 
 export default class UserDao {
      create(data) {
+      console.log('data dao', data);
       return UserModel.create(data);
     }
   

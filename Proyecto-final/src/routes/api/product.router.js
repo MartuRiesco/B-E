@@ -12,13 +12,14 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
   const { page = 1, limit = 5, group, sort } = req.query;
   const opts = { page, limit, sort: { price: sort || 'asc' } };
   const criteria = {};
-  const { first_name, last_name, role } = req.user;
+  const { first_name, last_name, role, cartId } = req.user;
   if (group) {
     criteria.category = group;
   }
   const result = await productModel.paginate(criteria, opts);
   console.log('rol', req.user);
-  res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role}));
+  console.log('cart id req user', cartId);
+  res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId}));
 } catch (error) {
   console.log('Ah ocurrido un error durante la busqueda de productos 😨');
   next(error);
@@ -35,6 +36,7 @@ const buildResponse = (data) => {
     userName: data.first_name,
     userLastName: data.last_name,
     userRol:data.role,
+    userCart:data.cartId,
     hasPrevPage: data.hasPrevPage,
     hasNextPage: data.hasNextPage,
     chatLink:`http://localhost:8080/chat`,

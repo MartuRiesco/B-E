@@ -12,14 +12,14 @@
           return;
       }
         socket.emit('new-message', { userName, message });
-        console.log('Nuevo mensaje enviado', { userName, message });
+        /* console.log('Nuevo mensaje enviado', { userName, message }); */
         inputMessage.value = '';
         inputMessage.focus();
       });
  function updateMessages(messages){
     logMessages.innerText = '';
-    console.log('mensajes',messages);
-   
+    /* console.log('mensajes',messages);
+    */
     messages.forEach((msg)  => {
         const p = document.createElement('p');
         p.innerText = `${msg.userName}: ${msg.message}`;
@@ -33,7 +33,7 @@ socket.on('notification', ({ messages }) => {
   });
 
   socket.on('new-message-from-api', (message) => {
-    console.log('new-message-from-api ->', message);
+  /*   console.log('new-message-from-api ->', message); */
   });
 
   socket.on('new-client', () => {
@@ -58,7 +58,7 @@ socket.on('notification', ({ messages }) => {
   .then((result)=>{ 
   userName = result.value.trim()
   
-    console.log(`Bienvenid@ ${userName}`);
+    /* console.log(`Bienvenid@ ${userName}`); */
   });
 
 

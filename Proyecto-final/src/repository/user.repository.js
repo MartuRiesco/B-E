@@ -4,12 +4,10 @@ import UserDTO from "../dto/user.dto.js";
 export default class User {
     constructor(dao) {
         this.dao = dao;
-        console.log('dao', this.dao);
-        console.log('typeof dao.get:', typeof this.dao.get);
     }
     
     async get(email) {
-        console.log('typeof this.dao.get (inside get method):', typeof this.dao.get);
+        /* console.log('typeof this.dao.get (inside get method):', typeof this.dao.get); */
         const user = new UserDTO(await this.dao.get(email));
         console.log('pass', user.password);
 
@@ -24,8 +22,9 @@ export default class User {
     async find(criteria) {
     return new UserDTO(await this.dao.find(criteria));}
     
-    async create(user) {
-    return new UserDTO(await this.dao.create(user));}
+    create(user) {
+        console.log('user dto', user );
+    return  this.dao.create(user);}
     
     updateById(id, userUpdated) {
     return this.dao.updateById(id, userUpdated);}

@@ -9,12 +9,13 @@
 {{#each payload}}
         <tr>
           <td>{{../cartId}}</td>
-            <td>{{this.product._id}}</td> <!-- Utilizar notación de corchetes para acceder a la propiedad -->
+            <td>{{this.product}}</td> 
           <td>{{this.quantity}}</td>
         </tr>
 
     
     {{/each }}
   </table>  
+ 
 <a href="/products" role="button">Volver a los productos</a>
 </div>

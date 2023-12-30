@@ -1,10 +1,12 @@
 import CartModel from '../models/cart.model.js';
+import { Exception } from '../utils.js';
 
 export default class CartDAO {
   static async getAll() {
     return CartModel.find({});
   }
   static async getOrCreateCart(userId) {
+    console.log('UserId:', userId);
     const existingCart = await CartModel.findOne({ user: userId });
     if (existingCart) {
       return existingCart;
@@ -15,7 +17,7 @@ export default class CartDAO {
     static async getById(cid, populate = false) {
       try {
         const cart = await CartModel.findOne({ _id: cid });
-        console.log("populate", populate);
+        /* console.log("populate", populate); */
         if (populate) {
           return await cart.populate("products.product");
         }
@@ -41,7 +43,10 @@ export default class CartDAO {
   }
 
   static async addProductToCart(cartId, productId) {
-    const cart = await CartModel.findById(cartId);
+    try {
+      console.log('cartId y product ID', cartId, productId);
+      const cart = await CartModel.findById(cartId);
+    console.log('cart dao', cart);
     if (!cart) {
       throw new Exception('No existe ese Carrito', 404);
     }
@@ -54,6 +59,10 @@ export default class CartDAO {
     }
 
     await cart.save();
+    } catch (error) {
+      console.log(error.message);
+    }
+    
   }
 
   static async deleteProductFromCart(cartId, productId) {

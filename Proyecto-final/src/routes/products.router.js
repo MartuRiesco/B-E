@@ -60,7 +60,7 @@ ProductRouter.get('/products', async(req, res) => {
       thumbnails
     }
      let added = await productManager.addProduct(newProduct)
-     console.log(added);
+    /*  console.log(added); */
      if (!added) {
       throw new Error(`El producto no se pudo agregar`)}
       else{

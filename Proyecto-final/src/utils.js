@@ -47,7 +47,7 @@ export const tokenGenerator = (user, cartId) => {
     cartId
   };
   const token = JWT.sign(payload, JWT_SECRET, { expiresIn: '30m' });
-  console.log('token', token);
+/*   console.log('token', token); */
  return token
  } 
 
@@ -67,7 +67,7 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     if (error) {
       return next(error);
     }
-    console.log('payload', payload);
+    /* console.log('payload', payload); */
     if (!payload) {
       return res.status(401).json({ message: info.message ? info.message : info.toString() });
     }
@@ -109,8 +109,8 @@ export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
 
 
 /* const server = http.createServer(app);
-  const socketServer = new Server(server) */
-   const getNewId = () => uuidv4();
+  const socketServer = new Server(server) */ 
+  const getNewId = () => uuidv4();
 
   export class Exception extends Error{
     constructor(message, status){

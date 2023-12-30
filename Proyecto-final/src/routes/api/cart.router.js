@@ -4,6 +4,7 @@ import CartModel from "../../models/cart.model.js";
 import CartController from "../../controller/cart.controller.js";
 
 const router = Router()
+router.post('/carts/:cid/purchase', authenticationMiddleware('jwt'), CartController.purchaseCart);
 
 router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('user'), async(req, res)=>{
   try {
@@ -13,20 +14,36 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('us
     res.status(error.statusCode || 500).json({ message: error.message });
   } 
     })
-router.get('/carts/:cid', async (req, res) => {
-  /* const { params: { cid } } = req; */
+    router.get('/carts/:cid', authenticationMiddleware('jwt'), async (req, res) => {
+      try {
+        const user = req.user;
+        console.log('user', user);
+        const result = await CartController.getCartById(user.cartId);
+        console.log('result', result);
+        res.render('cart', buildResponse(user.cartId, result));
+      } catch (error) {
+        console.log('Error', error.message);
+      }
+    });
+    
+/* router.get('/carts/:cid',authenticationMiddleware('jwt'), async (req, res) => {
+ 
    try {
     const cid = req.params.cid; 
-     const result = await CartController.getCartById(cid)
+    const user = req.user
+    console.log('user uuu', user);
+     const result = await CartController.getCartById(user.cartId)
+     const result = await CartController.getOrCreateCart(user.cartId)
      console.log('result', result);
      res.render('cart', buildResponse(cid, result))
    } catch (error) {
      console.log('Error', error.message);
    }
-        })
+        }) */
+      
         const buildResponse = (cid, data) => {
           const payload = data.products.map(product => product.toJSON())
-            console.log('payload', payload)
+            console.log('payload a', payload)
             return {
                 cartId: cid,
                 payload

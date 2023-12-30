@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import passport from 'passport';
 import UserModel from '../../models/user.model.js'
-import { authPolicies, createHash } from '../../utils.js';
+import {  createHash } from '../../utils.js';
 
 const router = Router();
 
 router.get('/users',
   passport.authenticate('jwt', { session: false }),
-  authPolicies(['admin']),
+  
   async (req, res) => {
     const users = await UserModel.find({});
     res.status(200).json(users);
@@ -15,7 +15,7 @@ router.get('/users',
 
 router.post('/users',
   passport.authenticate('jwt', { session: false }),
-  authPolicies(['admin']),
+  /* authPolicies(['admin']), */
   async (req, res) => {
     const {
       first_name,
@@ -50,7 +50,7 @@ router.post('/users',
 
 router.get('/users/:uid',
   passport.authenticate('jwt', { session: false }),
-  authPolicies(['admin']),
+  /* authPolicies(['admin']), */
   async (req, res) => {
     const { uid } = req.params;
     const user = await UserModel.findById(uid);
@@ -62,7 +62,7 @@ router.get('/users/:uid',
 
 router.put('/users/:uid',
   passport.authenticate('jwt', { session: false }),
-  authPolicies(['admin']),
+/*   authPolicies(['admin']), */
   async (req, res) => {
     const { params: { uid }, body } = req;
     const { first_name, last_name, dni, email } = body;
@@ -77,7 +77,7 @@ router.put('/users/:uid',
 
 router.delete('/users/:uid',
   passport.authenticate('jwt', { session: false }),
-  authPolicies(['admin']),
+ /*  authPolicies(['admin']), */
   async (req, res) => {
     const { uid } = req.params;
     const user = await UserModel.findById(uid);

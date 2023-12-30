@@ -20,6 +20,7 @@ export default class AuthController{
             password,
             age,
           } = data;
+          console.log('data :', data);
           if (
             !first_name ||
             !last_name ||
@@ -32,19 +33,24 @@ export default class AuthController{
           let user = await UserService.get({ email });
           if (user) {
             throw new Error('Correo ya registrado 😨. Intenta recuperar tu contraseña 😁.' );
+          }try {
+            const users = await UserService.create({
+              first_name,
+              last_name,
+              email,
+              age,
+              password: createHash(password),
+            });
+            const cart = await CartManager.getOrCreateCart(users._id);
+            console.log('cart:', cart);
+           users.cart = cart._id;
+            await users.save();
+            const token = tokenGenerator(users, users.cart);
+            return token
+          } catch (error) {
+            console.log(error.message);
           }
-          user = await UserService.create({
-            first_name,
-            last_name,
-            email,
-            age,
-            password: createHash(password),
-          });
-          const cart = await CartManager.getOrCreateCart(user._id);
-         user.cart = cart._id;
-          await user.save();
-          const token = tokenGenerator(user, user.cart);
-          return token
+        
 
     }
 
@@ -65,9 +71,8 @@ export default class AuthController{
         console.log('user ss', user);
         if (!user) {
             throw new Error('Correo o contraseña invalidos 😨')
-        }
-        const cart = await CartManager.getOrCreateCart(user._id);
-        console.log(cart, 'cart');
+        }console.log('user id', user.id);
+        const cart = await CartManager.getOrCreateCart(user.id);
         const isValidPassword = isPasswordValid(password, user);
         if (!isValidPassword) {
             throw new Error('Correo o contraseña invalidos ss😨')
