@@ -22,9 +22,9 @@ export default class User {
     async find(criteria) {
     return new UserDTO(await this.dao.find(criteria));}
     
-    create(user) {
-        console.log('user dto', user );
-    return  this.dao.create(user);}
+    async  create(user) {
+
+    return new UserDTO(await this.dao.create(user) ) ;}
     
     updateById(id, userUpdated) {
     return this.dao.updateById(id, userUpdated);}

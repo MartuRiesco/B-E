@@ -12,7 +12,7 @@ const Admin = {first_name: config.adminName,
 }
 
 export default class AuthController{
-    static  async register  (data){
+    static  async register(data){
         const {
             first_name,
             last_name,
@@ -33,24 +33,22 @@ export default class AuthController{
           let user = await UserService.get({ email });
           if (user) {
             throw new Error('Correo ya registrado 😨. Intenta recuperar tu contraseña 😁.' );
-          }try {
-            const users = await UserService.create({
+          }
+            let registeredUser = await UserService.create({
               first_name,
               last_name,
               email,
               age,
               password: createHash(password),
             });
-            const cart = await CartManager.getOrCreateCart(users._id);
+            
+            const cart = await CartManager.getOrCreateCart(registeredUser._id);
             console.log('cart:', cart);
-           users.cart = cart._id;
-            await users.save();
-            const token = tokenGenerator(users, users.cart);
-            return token
-          } catch (error) {
-            console.log(error.message);
-          }
-        
+            registeredUser.cart = cart._id;
+            await registeredUser.save();
+            const token = tokenGenerator(registeredUser, registeredUser.cart);
+            return token;
+         
 
     }
 

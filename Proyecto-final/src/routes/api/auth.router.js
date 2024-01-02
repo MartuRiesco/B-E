@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import cartModel from '../../models/cart.model.js';
 import CartController from '../../controller/cart.controller.js';
 import AuthController from '../../controller/auth.controller.js';
+import UserService from '../../services/user.service.js';
 
 
 const router = Router();
