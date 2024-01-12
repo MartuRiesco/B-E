@@ -1,4 +1,5 @@
 import ProductsService from '../services/product.services.js';
+import  {faker} from '@faker-js/faker';
 
 export default class ProductsController {
   static async create(data) {
@@ -8,6 +9,22 @@ export default class ProductsController {
     return newProduct;
   }
 
+  static async createFakeProducts(){
+    const mockProducts = [];
+    for (let i = 1; i <= 100; i++) {
+      mockProducts.push({
+        id: faker.database.mongodbObjectId(),
+    title: faker.commerce.productName(),
+    description: faker.lorem.paragraph(),
+    code: faker.string.alphanumeric({ length: 10 }),
+    price: faker.commerce.price(),
+    category:faker.commerce.department(),
+    stock: faker.number.int({ min: 10000, max: 99999 }),
+    thumbnails: faker.image.url(),
+      });
+    }
+    return { docs: mockProducts };
+  }
   static async get(query = {}) {
     const products = await ProductsService.findAll(query); 
     return products;

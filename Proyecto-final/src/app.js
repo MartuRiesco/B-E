@@ -19,12 +19,14 @@ import expressSession from 'express-session';
 import MongoStore from 'connect-mongo';
 import { URI } from './db/mongodb.js';
 import config from './config.js';
+import expressCompression from 'express-compression'
 
 const SESSION_SECRET =  config.sessionSecret/* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
 
  app.engine('handlebars', handlebars.engine());
  app.set('views', path.join(__dirname, 'views'));
  app.set('view engine', 'handlebars');
+ app.use(expressCompression())
  app.use((error, req, res, next) => {
   const message = `😨 Ah ocurrido un error desconocido: ${error.message}`;
   /* console.log(message); */

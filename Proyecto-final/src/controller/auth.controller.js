@@ -2,6 +2,9 @@ import CartManager from "../dao/CartManager.js";
 import UserService from "../services/user.service.js";
 import { createHash, tokenGenerator, isPasswordValid } from "../utils.js";
 import config from '../config.js'
+import { CustomError } from "../utils/CustomError.js";
+import EnumsError from "../utils/enumError.js";
+import { generatorUserError, validatorUserError } from "../utils/CauseMessageError.js";
 
 const Admin = {first_name: config.adminName,
   last_name: config.adminLastname,
@@ -28,7 +31,18 @@ export default class AuthController{
             !age||
             !password
           ) {
-            throw new Error('Todos los campos son requeridos 😨')
+            CustomError.createError({
+              name: 'Error creando el usuario',
+              cause: generatorUserError({
+                first_name,
+                last_name,
+                email,
+                age,
+                password,
+              }),
+              message: 'Ocurrio un error mientras intentamos crear un usuario.',
+              code: EnumsError.BAD_REQUEST_ERROR,
+            });
           }
           let user = await UserService.get({ email });
           if (user) {
@@ -68,12 +82,28 @@ export default class AuthController{
       let user = await UserService.get( {email});
         console.log('user ss', user);
         if (!user) {
-            throw new Error('Correo o contraseña invalidos 😨')
+          CustomError.createError({
+            name: 'Error accediendo al usuario ',
+            cause: validatorUserError({
+              email,
+              password,
+            }),
+            message: 'Contraseña o email invalidos😨.',
+            code: EnumsError.INVALID_PARAMS_ERROR,
+          })
         }console.log('user id', user.id);
         const cart = await CartManager.getOrCreateCart(user.id);
         const isValidPassword = isPasswordValid(password, user);
         if (!isValidPassword) {
-            throw new Error('Correo o contraseña invalidos ss😨')
+          CustomError.createError({
+            name: 'Error accediendo al usuario ',
+            cause: validatorUserError({
+              email,
+              password,
+            }),
+            message: 'Contraseña o email invalidos😨.',
+            code: EnumsError.INVALID_PARAMS_ERROR,
+          })
         }
         const token = tokenGenerator(user, cart._id);
       
@@ -84,9 +114,17 @@ export default class AuthController{
         const { email, newPassword } = data;
         const user = await UserService.get({ email });
         if (!user) {
-            throw new Error('Correo o contraseña invalidos 😨')
+          CustomError.createError({
+            name: 'Error accediendo al usuario ',
+            cause: validatorUserError({
+              email,
+              password,
+            }),
+            message: 'Contraseña o email invalidos😨.',
+            code: EnumsError.INVALID_PARAMS_ERROR,
+          })
         };
-      const  userId = user._id 
+      const  userId = user.id 
       await UserService.updateById(userId, { password: createHash(newPassword) });
 return user
     }

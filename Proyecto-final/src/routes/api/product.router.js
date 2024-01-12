@@ -28,18 +28,18 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
 const buildResponse = (data) => {
   return {
     status: 'success',
-    payload: data.docs.map(product => product.toJSON()),
+    payload: data.docs.map(product => (typeof product.toJSON === 'function' ? product.toJSON() : product)),
     totalPages: data.totalPages,
     prevPage: data.prevPage,
     nextPage: data.nextPage,
     page: data.page,
     userName: data.first_name,
     userLastName: data.last_name,
-    userRol:data.role,
-    userCart:data.cartId,
+    userRol: data.role,
+    userCart: data.cartId,
     hasPrevPage: data.hasPrevPage,
     hasNextPage: data.hasNextPage,
-    chatLink:`http://localhost:8080/chat`,
+    chatLink: `http://localhost:8080/chat`,
     prevLink: data.hasPrevPage ? `http://localhost:8080/products?limit=${data.limit}&page=${data.prevPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
     nextLink: data.hasNextPage ? `http://localhost:8080/products?limit=${data.limit}&page=${data.nextPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
   };
@@ -84,6 +84,21 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
         res.status(error.statusCode|| 500).json({message: error.message})
     } 
     })
+    router.get('/mockingproducts', authenticationMiddleware('jwt'), async (req, res, next) => {
+      try { const { page = 1, limit = 5, group, sort } = req.query;
+      const opts = { page, limit, sort: { price: sort || 'asc' } };
+      const criteria = {};
+        if (group) {
+        criteria.category = group;
+      }
+        const { first_name, last_name, role, cartId } = req.user;
+        const data = await ProductsController.createFakeProducts();
+        res.render('products', buildResponse({ ...data, group, sort, first_name, last_name, role, cartId}));
+      } catch (error) {
+        console.error("Error: ", error.message);
+        next(error);
+      }
+    });
     router.post('/products', authorizationMiddleware('admin'), async (req, res, next) => {
       try {
         const { body } = req;
@@ -98,7 +113,7 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
         next(error);
       }
     });
-        router.put('/products/:pid',authorizationMiddleware('admin'), async (req, res) => {
+        router.put('/products/:pid', authenticationMiddleware('jwt'),authorizationMiddleware('admin'), async (req, res) => {
             try {
               const { params: { pid }, body } = req;
               await ProductsController.updateById(pid, body);
@@ -108,9 +123,13 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
             }
           });
 
-            router.delete('/products/:pid', authorizationMiddleware('admin'), async (req, res) => {
+            router.delete('/products/:pid', authenticationMiddleware('jwt'), authorizationMiddleware('admin'), async (req, res) => {
                 try {
+                  console.log('user Rps', req.user.role);
                   const { params: { pid } } = req;
+                  if (req.user.role !== 'admin') {
+                    return res.status(403).json({ message: 'No tiene permisos para eliminar productos' });
+                  }
                   await ProductsController.deleteById(pid);
                   res.status(204).end();
                 } catch (error) {

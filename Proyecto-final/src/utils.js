@@ -75,8 +75,8 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     next();
   })(req, res, next);
 };
-/* export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
- 
+export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
+  console.log('user rol', req.user);
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
@@ -87,8 +87,8 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
   }
 
   next();
-}; */
-export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
+};
+/* export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
   console.log('user rol', req.user);
   if (!req.user) {
     console.log('No hay usuario autenticado');
@@ -105,7 +105,7 @@ export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
   }
 
   next();
-};
+}; */
 
 
 /* const server = http.createServer(app);
