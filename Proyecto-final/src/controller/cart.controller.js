@@ -9,9 +9,9 @@ export default class CartController {
     static async getAllCarts(req, res) {
       try {
         const carts = await CartManager.getAll();
-       console.log(`Carritos disponibles ${carts}`);
+       req.logger.info(`Carritos disponibles ${carts}`);
       } catch (error) {
-        console.log(`Carritos no disponibles`);
+        req.logger.error(`Carritos no disponibles`);
       }
     }
   

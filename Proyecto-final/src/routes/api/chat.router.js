@@ -6,7 +6,7 @@ const router = Router()
 
 router.get('/chat',authenticationMiddleware('jwt'), async (req, res) => {
     const { query = {} } = req;
-    console.log('req.user:', req.user);
+    req.logger.info('req.user:', req.user);
     const { first_name, last_name, role } = req.user;
     const message = await MessageManager.get(query);
     res.render('chat', buildResponse({ first_name, last_name, role, message: message.map(m=> m.toJSON()) }));

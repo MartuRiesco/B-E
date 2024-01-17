@@ -17,11 +17,11 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
     criteria.category = group;
   }
   const result = await productModel.paginate(criteria, opts);
-  console.log('rol', req.user);
-  console.log('cart id req user', cartId);
+  req.logger.info('rol', req.user);
+  req.logger.info('cart id req user', cartId);
   res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId}));
 } catch (error) {
-  console.log('Ah ocurrido un error durante la busqueda de productos 😨');
+  req.logger.error('Ah ocurrido un error durante la busqueda de productos 😨');
   next(error);
 }
 }); 
@@ -44,37 +44,6 @@ const buildResponse = (data) => {
     nextLink: data.hasNextPage ? `http://localhost:8080/products?limit=${data.limit}&page=${data.nextPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
   };
 };
-/* router.get('/products', authenticationMiddleware('jwt'),
-async (req, res) => {
-const { page = 1, limit = 5, group, sort } = req.query;
-const opts = { page, limit, sort: { price: sort || 'asc' } };
-const criteria = {};
-const { first_name, last_name, rol } = req.user;
-/* if (!user) {
-  return res.status(401).send('Usuario no autenticado 😨.');
-} 
-let userData
-if (user.email === 'adminCoder@coder.com') {
-  userData = {
-    first_name: 'Admin',
-    last_name: 'Coderhouse',
-    rol: 'admin',
-  };console.log('userdata', userData);
-}
-  
-else{  userData = await userModel.findOne({ email: user.email });
-
-if (!userData) {
-  return res.status(404).send('Usuario no encontrado 😨.');
-}} */
-
-/* if (group) {
-  criteria.category = group;
-}
-const result = await productModel.paginate(criteria, opts);
-res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, rol}));
-}); */ 
-
 router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
     try {
         const {params:{pid}}= req
@@ -95,21 +64,21 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
         const data = await ProductsController.createFakeProducts();
         res.render('products', buildResponse({ ...data, group, sort, first_name, last_name, role, cartId}));
       } catch (error) {
-        console.error("Error: ", error.message);
+        req.logger.error("Error: ", error.message);
         next(error);
       }
     });
     router.post('/products', authorizationMiddleware('admin'), async (req, res, next) => {
       try {
         const { body } = req;
-        console.log('req.user.role', req.user.role);
+        req.logger.info('req.user.role', req.user.role);
         if (req.user.role !== 'admin') {
           return res.status(403).json({ message: 'No tiene permisos para crear productos' });
         }
             await ProductsController.create(body);
         res.status(201).json({ message: 'Producto creado con éxito' });
       } catch (error) {
-        console.log('Ha ocurrido un error durante la creación del producto 😨', error);
+        req.logger.fatal('Ha ocurrido un error durante la creación del producto 😨', error);
         next(error);
       }
     });
@@ -125,7 +94,7 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
 
             router.delete('/products/:pid', authenticationMiddleware('jwt'), authorizationMiddleware('admin'), async (req, res) => {
                 try {
-                  console.log('user Rps', req.user.role);
+                  req.logger.info('user Rps', req.user.role);
                   const { params: { pid } } = req;
                   if (req.user.role !== 'admin') {
                     return res.status(403).json({ message: 'No tiene permisos para eliminar productos' });

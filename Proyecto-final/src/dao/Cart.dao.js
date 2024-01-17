@@ -17,7 +17,6 @@ export default class CartDAO {
     static async getById(cid, populate = false) {
       try {
         const cart = await CartModel.findOne({ _id: cid });
-        /* console.log("populate", populate); */
         if (populate) {
           return await cart.populate("products.product");
         }

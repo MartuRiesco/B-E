@@ -7,10 +7,8 @@
           if (event.target.classList.contains('addToCart')) {
             if (userRol === 'user') {
               const pid = event.target.dataset.productid;
-              console.log('pid', pid);
               addProductToCart(cartId, pid);
               alert('Se agregó al carrito');
-             /*  console.log('Product ID', pid); */
             } else {
               alert('Solo los usuarios pueden agregar al carrito');
             }}
@@ -19,12 +17,7 @@
             socket.emit('addProductToCart', cartId.toString(),  pid);
           }
           socket.on('addProductToCart', () => {
-           /*  console.log('Evento addProductToCart recibido'); */
           })
-         /*  socket.on('notification', ({ cartId }) => {
-            const cartLink = document.querySelector('.cart-link');
-            cartLink.href = `/carts/${cartId}`;
-          }); */
          formProduct.addEventListener('submit', (event) => {
           event.preventDefault();
           const title = document.getElementById("title").value;

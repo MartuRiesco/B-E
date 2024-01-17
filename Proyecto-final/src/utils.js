@@ -47,7 +47,6 @@ export const tokenGenerator = (user, cartId) => {
     cartId
   };
   const token = JWT.sign(payload, JWT_SECRET, { expiresIn: '30m' });
-/*   console.log('token', token); */
  return token
  } 
 
@@ -67,7 +66,6 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     if (error) {
       return next(error);
     }
-    /* console.log('payload', payload); */
     if (!payload) {
       return res.status(401).json({ message: info.message ? info.message : info.toString() });
     }
@@ -76,7 +74,7 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
   })(req, res, next);
 };
 export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
-  console.log('user rol', req.user);
+  req.logger.info('user rol', req.user);
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
@@ -88,28 +86,6 @@ export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
 
   next();
 };
-/* export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
-  console.log('user rol', req.user);
-  if (!req.user) {
-    console.log('No hay usuario autenticado');
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  const { role: userRole } = req.user;
-  console.log('Rol del usuario:', userRole);
-  console.log('Rol requerido:', requiredRole);
-
-  if (userRole.toLowerCase() !== requiredRole.toLowerCase()) {
-    console.log('No tiene permisos');
-    return res.status(403).json({ message: 'No permissions' });
-  }
-
-  next();
-}; */
-
-
-/* const server = http.createServer(app);
-  const socketServer = new Server(server) */ 
   const getNewId = () => uuidv4();
 
   export class Exception extends Error{

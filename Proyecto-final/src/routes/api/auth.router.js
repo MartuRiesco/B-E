@@ -13,9 +13,9 @@ const router = Router();
 
 router.post('/auth/register', async (req, res) => {
   try {
-    console.log('req.body:', req.body);
+    req.looger.info('req.body:', req.body);
    const token =  await AuthController.register(req.body)
-   console.log('token auth', token);
+   req.looger.info('token auth', token);
     res.cookie('access_token', token, { httpOnly: true, signed: true });
     res.status(201)
     .redirect('/')

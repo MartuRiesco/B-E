@@ -11,6 +11,7 @@ import cartViewsRouter from './routes/views/carts.router.js'
 import MessageViewsRouter from './routes/views/chats.router.js'
 import chatRouter from './routes/api/chat.router.js'
 import indexRouter from './routes/api/index.router.js'
+import indexrut from './routes/views/index.js'
 /* import sessionRouter from './routes/api/sessions.router.js' */
 import authRouter from './routes/api/auth.router.js';
 import userRouter from './routes/api/user.router.js'
@@ -20,16 +21,18 @@ import MongoStore from 'connect-mongo';
 import { URI } from './db/mongodb.js';
 import config from './config.js';
 import expressCompression from 'express-compression'
+import { addLogger } from './config/logger.js';
 
 const SESSION_SECRET =  config.sessionSecret/* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
 
+
+app.use(addLogger)
  app.engine('handlebars', handlebars.engine());
  app.set('views', path.join(__dirname, 'views'));
  app.set('view engine', 'handlebars');
  app.use(expressCompression())
  app.use((error, req, res, next) => {
   const message = `😨 Ah ocurrido un error desconocido: ${error.message}`;
-  /* console.log(message); */
   res.status(500).json({ status: 'error', message });
 });
 const COOKIE_SECRET = config.cookeSecret /* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
@@ -49,7 +52,7 @@ initPassportConfig()
 app.use(passport.initialize());
 /* app.use(passport.session()); */
 
-app.use('/', indexRouter );
+app.use('/', indexRouter, indexrut );
 /* app.use('/api', sessionRouter); */
 app.use('/', authRouter)
 app.use('/', cartApiRouter)
@@ -60,11 +63,4 @@ app.get('/realtimeproducts', (req,res) => {
   const empty = products.length === 0
   res.render('realtimeproducts', {empty})
 })
-/* socketServer.on('connection', (socket) => {
-    console.log(`Nuevo cliente conectado 🎉 (${socket.id}).`);
-    socket.emit('products', products);
-    socket.on('products', (products) => {
-      socketServer.emit('products', products);
-    });
-  }) */
 export default app
