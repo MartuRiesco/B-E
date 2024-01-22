@@ -5,6 +5,7 @@ import config from '../config.js'
 import { CustomError } from "../utils/CustomError.js";
 import EnumsError from "../utils/enumError.js";
 import { generatorUserError, validatorUserError } from "../utils/CauseMessageError.js";
+import EmailService from "../services/email.service.js";
 
 const Admin = {first_name: config.adminName,
   last_name: config.adminLastname,
@@ -109,23 +110,49 @@ export default class AuthController{
       
         return token
     }
-
+    
     static async recovery(data){
-        const { email, newPassword } = data;
-        const user = await UserService.get({ email });
-        if (!user) {
-          CustomError.createError({
-            name: 'Error accediendo al usuario ',
-            cause: validatorUserError({
-              email,
-              password,
-            }),
-            message: 'Contraseña o email invalidos😨.',
-            code: EnumsError.INVALID_PARAMS_ERROR,
-          })
-        };
-      const  userId = user.id 
-      await UserService.updateById(userId, { password: createHash(newPassword) });
+      const { email, password } = data;
+      const user = await UserService.get({ email });
+      if (!user) {
+        CustomError.createError({
+          name: 'Error accediendo al usuario ',
+          cause: validatorUserError({
+            email,
+            password,
+          }),
+          message: 'Contraseña o email invalidos😨.',
+          code: EnumsError.INVALID_PARAMS_ERROR,
+        })
+      };
+      const hashedPassword = createHash(password);
+    const  userId = user.id 
+    const updateResult = await UserService.updateById(userId, { password: hashedPassword });
+    console.log('User recovered:', user);
+    console.log('Hashed password:', hashedPassword);
+    console.log('Update result:', updateResult);
+    const userUpdated = await UserService.getById(userId);
+    console.log('User after update:', userUpdated);
+ 
+return userUpdated
+  }
+    static async restorePassword(data){
+      const { email} = data;
+      const user = await UserService.get({ email });
+      if (!user) {
+        CustomError.createError({
+          name: 'Error accediendo al usuario ',
+          cause: validatorUserError({
+            email,
+            password,
+          }),
+          message: 'No hay ningun ususario registrado con ese email 😨.',
+          code: EnumsError.INVALID_PARAMS_ERROR,
+        })
+      };
+      const emailService = EmailService.getInstance();
+      await emailService.sendRecoveryPasswordEmail(user);
+  
 return user
-    }
+  }
 }

@@ -16,17 +16,21 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('us
     })
     router.get('/carts/:cid', authenticationMiddleware('jwt'), async (req, res) => {
       try {
+        console.log('req', req.user.cartId);
         const user = req.user;
-        const result = await CartController.getCartById(user.cartId);
-        res.render('cart', buildResponse(user.cartId, result));
+        const cartId =user.cartId
+        console.log(cartId);
+        const result = await CartController.getCartById(cartId);
+        res.render('cart', buildResponse(cartId, result));
       } catch (error) {
-        req.logger.error(message.error)
+        req.logger.error(error.message)
       }
+        
+      
     });
          
         const buildResponse = (cid, data) => {
           const payload = data.products.map(product => product.toJSON())
-            req.logger.info('payload a', payload)
             return {
                 cartId: cid,
                 payload

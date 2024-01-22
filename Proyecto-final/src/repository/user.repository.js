@@ -1,15 +1,14 @@
 import { isPasswordValid } from "../utils.js";
 import UserDTO from "../dto/user.dto.js";
 
+
 export default class User {
     constructor(dao) {
         this.dao = dao;
     }
     
     async get(email) {
-        /* console.log('typeof this.dao.get (inside get method):', typeof this.dao.get); */
         const user = new UserDTO(await this.dao.get(email));
-        console.log('pass', user.password);
 
         return user
         /* return new UserDTO(await this.dao.get(email)); */
@@ -26,8 +25,11 @@ export default class User {
 
     return new UserDTO(await this.dao.create(user) ) ;}
     
-    updateById(id, userUpdated) {
-    return this.dao.updateById(id, userUpdated);}
+    async updateById(id, data) {
+        const updateResult = await this.dao.updateById(id, { $set: data });
+        return updateResult;  // Devuelve directamente el resultado de la actualización
+      }
+      
     
     deleteById(id) {
     return this.dao.deleteById(id);}

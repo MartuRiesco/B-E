@@ -17,5 +17,6 @@
     adminPassword: process.env.ADMIN_PASSWORD,
     adminRole: process.env.ADMIN_ROLE,
     ENV: process.env.NODE_ENV || 'dev',
+    persistance: process.env.PERSISTANCE || 'mongo',
     
   }

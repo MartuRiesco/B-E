@@ -1,4 +1,4 @@
-import ProductDao from '../dao/Product.dao.js';
+import {ProductDao} from '../dao/factory.js';
 
 export default class ProductsService {
 

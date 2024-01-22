@@ -27,7 +27,7 @@ export default class CartDAO {
     }
   
 
-  static async create(data) {
+  createCart(data) {
     return CartModel.create(data);
   }
 

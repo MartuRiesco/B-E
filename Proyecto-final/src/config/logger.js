@@ -48,6 +48,5 @@ const customLevelsOptions = {
   
   export const addLogger = (req, res, next) => {
     req.logger = config.ENV === 'prod' ? loggerProd : loggerDev;
-    console.log('config req levels', req.logger.levels);
     next();
   };

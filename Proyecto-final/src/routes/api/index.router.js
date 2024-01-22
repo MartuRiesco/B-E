@@ -32,5 +32,7 @@ const router = Router();
   router.get('/recovery-password',/*  publicRouters, */ (req, res) => {
     res.render('recovery-password', { title: 'Recuperar Contraseña' });
   });
-
+  router.get('/restore-password',/*  publicRouters, */ (req, res) => {
+    res.render('restore-password', { title: 'Recuperar Contraseña' });
+  });
   export default router;

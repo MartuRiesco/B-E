@@ -16,7 +16,10 @@ const app= express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, '../public')));
-export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+export const createHash = (password) => {
+  console.log('Password in createHash:', password);
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+};
 /* export const isPasswordValid = (password, user) => bcrypt.compare(password, user.password) */
 export const isPasswordValid =  (password, user) => {
   try {
