@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticationMiddleware, authorizationMiddleware } from "../../utils.js";
 import CartModel from "../../models/cart.model.js";
 import CartController from "../../controller/cart.controller.js";
+import ProductsController from "../../controller/product.controller.js";
 
 const router = Router()
 router.post('/carts/:cid/purchase', authenticationMiddleware('jwt'), CartController.purchaseCart);
@@ -42,14 +43,19 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('us
             const cart = await CartController.getOrCreateCart(body)
             res.status(201).send('carrito agregado correctamente').json({cart})
             })
-    router.post('/carts/:cid/product/:pid', async(req, res)=>{
-        const {params:{pid,cid}}= req
-     /*    const { quantity}= req.body */
-           
+    router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['user', 'premium']), async(req, res)=>{
+        const {params:{pid,cid}}= req  
+        console.log('user ', req.user); 
+        const productToAdd= await ProductsController.getById(pid)
+        console.log('ptd', productToAdd.owner);
+        if (req.user.role === 'premium' && productToAdd.owner === req.user.email) { 
+          return res.status(403).json({ message: 'No podes agregar productos que  hayas creado.' });
+      } else{
+        console.log(cid);
             const cart = await CartController.addProductToCart(cid, pid)
-            res.status(201).send('producto agregado correctamente')
+            res.status(201).send('producto agregado correctamente')}
             })
-    router.delete('/carts/:cid/product/:pid', async (req, res) => {
+    router.delete('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), async (req, res) => {
                 try {
                     const {params:{pid,cid}}= req
                     const cart = await CartController.deleteProductFromCart(cid, pid)

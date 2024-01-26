@@ -15,7 +15,9 @@ export default class UserDao {
     }
   
      updateById(pid, data) {
-      return UserModel.updateOne({ _id: pid }, { $set: data });
+      const updateUser =UserModel.updateOne({ _id: pid }, { $set: data });
+      console.log('upd dao', data);
+      return updateUser
     }
   
      async deleteById(pid) {

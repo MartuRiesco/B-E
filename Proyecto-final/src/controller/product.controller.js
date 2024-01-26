@@ -2,9 +2,9 @@ import ProductsService from '../services/product.services.js';
 import  {faker} from '@faker-js/faker';
 
 export default class ProductsController {
-  static async create(data) {
+  static async create(data, user) {
     console.log('Creando el nuevo producto 👽');
-    const newProduct = await ProductsService.create(data);
+    const newProduct = await ProductsService.create(data, user);
     console.log('Producto creado corretamente 👽');
     return newProduct;
   }

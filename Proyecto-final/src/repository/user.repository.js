@@ -26,7 +26,8 @@ export default class User {
     return new UserDTO(await this.dao.create(user) ) ;}
     
     async updateById(id, data) {
-        const updateResult = await this.dao.updateById(id, { $set: data });
+        const updateResult = await this.dao.updateById(id,  data);
+        console.log('upd resul', updateResult);
         return updateResult;  // Devuelve directamente el resultado de la actualización
       }
       

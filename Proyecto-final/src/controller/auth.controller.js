@@ -128,11 +128,7 @@ export default class AuthController{
       const hashedPassword = createHash(password);
     const  userId = user.id 
     const updateResult = await UserService.updateById(userId, { password: hashedPassword });
-    console.log('User recovered:', user);
-    console.log('Hashed password:', hashedPassword);
-    console.log('Update result:', updateResult);
     const userUpdated = await UserService.getById(userId);
-    console.log('User after update:', userUpdated);
  
 return userUpdated
   }
@@ -155,4 +151,19 @@ return userUpdated
   
 return user
   }
-}
+static async changeUserRole(uid){
+    const userToUpdate = await UserService.getById(uid);
+    console.log('user to update', userToUpdate);
+    if (!userToUpdate) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    const UserRole =  userToUpdate.role
+   const UserUpdated = UserRole === 'user' ? 'premium' : 'user';
+   const userToUp = {...userToUpdate, role: UserUpdated}
+console.log('user updated', UserUpdated);
+    const user=  await UserService.updateById(uid, userToUp);
+    console.log('uo', userToUpdate);
+    return UserUpdated
+}}
+
+

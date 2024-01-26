@@ -27,7 +27,7 @@
           const category = document.getElementById("category").value;
           const stock = document.getElementById("stock").value;
 
-          if (userRol !== 'admin') {
+          if (userRol !== 'admin' && userRol !== 'premium') {
             alert('No tiene permisos para crear productos');
             return;
           }

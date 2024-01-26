@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import passport from 'passport';
 import UserModel from '../../models/user.model.js'
-import {  createHash } from '../../utils.js';
+import {  authenticationMiddleware, authorizationMiddleware, createHash } from '../../utils.js';
+import AuthController from '../../controller/auth.controller.js';
 
 const router = Router();
 
@@ -12,6 +13,21 @@ router.get('/users',
     const users = await UserModel.find({});
     res.status(200).json(users);
   });
+  router.put('/users/premium/:uid', authenticationMiddleware('jwt'), authorizationMiddleware(['premium']), async (req, res)=>{
+    try{
+      const { params: { uid } } = req;
+    const userToUpdate = await AuthController.changeUserRole(uid)
+  res.status(200).json({ message: `Rol de usuario actualizado con éxito, user: ${userToUpdate} `});
+} catch (error) {
+  console.error(error);
+  res.status(500).json({ message: 'Error al actualizar el rol del usuario' });
+}
+  
+  })
+  
+
+
+
 
 router.post('/users',
   passport.authenticate('jwt', { session: false }),

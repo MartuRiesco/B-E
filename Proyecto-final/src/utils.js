@@ -76,17 +76,18 @@ export const authenticationMiddleware = (strategy) => (req, res, next) => {
     next();
   })(req, res, next);
 };
-export const authorizationMiddleware = (requiredRole) => (req, res, next) => {
+export const authorizationMiddleware = (requiredRoles) => (req, res, next) => {
   req.logger.info('user rol', req.user);
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
-
-  const { role: userRole } = req.user;
-  if (userRole !== requiredRole) {
+  const userRole = req.user.role
+  const userEmail = req.user.email
+  const owner= req.user.owner
+  if (!requiredRoles.includes(userRole)) {
     return res.status(403).json({ message: 'No permissions' });
   }
-
+  
   next();
 };
   const getNewId = () => uuidv4();

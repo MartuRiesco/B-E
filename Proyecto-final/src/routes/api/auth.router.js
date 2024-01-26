@@ -24,7 +24,7 @@ router.post('/auth/register', async (req, res) => {
   }
   */
   const {
-    body: { first_name, last_name, email, password },
+    body: { first_name, last_name, email, password, role },
   } = req;
   if (!first_name || !last_name || !email || !password) {
     return res.status(400).json({ message: 'All fields are required' });
@@ -38,6 +38,7 @@ router.post('/auth/register', async (req, res) => {
     last_name,
     email,
     password: createHash(password),
+    role
   });
   const cartDao = new CartDAO();
   await cartDao.createCart({ user: user._id });

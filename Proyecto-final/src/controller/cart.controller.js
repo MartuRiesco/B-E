@@ -52,12 +52,14 @@ export default class CartController {
         }
       }
     
-      static async addProductToCart(req, res) {
+      static async addProductToCart(cid, pid) {
         try {
-          const { cid, pid } = req.params;
+         /*  const { cid, pid } = req.params;
+           */
           await CartManager.addProductToCart(cid, pid);
           console.log('Producto agregado correctamente');
         } catch (error) {
+          console.log(error.message);
           console.log(`No se pudo agregar el producto al carrito`);
         }
       }

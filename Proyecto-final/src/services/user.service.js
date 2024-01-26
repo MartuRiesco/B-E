@@ -15,6 +15,7 @@ export default class UserService {
     }
   
     static updateById(pid, data) {
+      console.log('data', data);
       return userRepository.updateById({ _id: pid }, { $set: data });
     }
   

@@ -6,9 +6,12 @@ export default class ProductsService {
     return ProductDao.get(filter);
   }
 
-  static async create(payload) {
+  static async create(payload, user) {
     console.log('Creando un nuevo producto 👽');
-    const product = await ProductDao.create(payload);
+    const isPremiumUser = user.role === 'premium';
+    const owner = isPremiumUser ? user.email : 'admin';
+    const productData = { ...payload, owner };
+    const product = await ProductDao.create(productData);
     console.log(`producto creado correctamente (${product._id}) 👽`);
     return product;
   }

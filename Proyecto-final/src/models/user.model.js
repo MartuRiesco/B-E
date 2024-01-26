@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   age: Number,
   password: String,
   provider: String,
-  role: { type: String, default: 'user',  enum: ['user', 'seller', 'admin']  },
+  role: { type: String, default: 'user',  enum: ['user', 'premium', 'admin']  },
   cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
   jwtToken: String,
 }, { timestamps: true });

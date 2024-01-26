@@ -17,7 +17,7 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
     criteria.category = group;
   }
   const result = await productModel.paginate(criteria, opts);
-  req.logger.info('rol', req.user);
+  req.logger.info('rol', role);
   req.logger.info('cart id req user', cartId);
   res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId}));
 } catch (error) {
@@ -68,19 +68,20 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
         next(error);
       }
     });
-    router.post('/products', authorizationMiddleware('admin'), async (req, res, next) => {
-      try {
-        const { body } = req;
-        req.logger.info('req.user.role', req.user.role);
-        if (req.user.role !== 'admin') {
-          return res.status(403).json({ message: 'No tiene permisos para crear productos' });
-        }
-            await ProductsController.create(body);
-        res.status(201).json({ message: 'Producto creado con éxito' });
-      } catch (error) {
-        req.logger.fatal('Ha ocurrido un error durante la creación del producto 😨', error);
-        next(error);
-      }
+router.post('/products', authenticationMiddleware('jwt'), authorizationMiddleware(['admin','premium']), async (req, res, next) => {
+  try {
+    const { body, user } = req;
+    console.log('role del user', req.user);
+    req.logger.info('req.user.role', req.user.role);
+    if (req.user.role !== 'admin' && req.user.role !== 'premium') {
+      return res.status(403).json({ message: 'No tienes permisos para crear productos' });
+    }
+        await ProductsController.create(body, user);
+    res.status(201).json({ message: 'Producto creado con éxito' });
+  } catch (error) {
+    req.logger.fatal('Ha ocurrido un error durante la creación del producto 😨', error);
+    next(error);
+  }
     });
         router.put('/products/:pid', authenticationMiddleware('jwt'),authorizationMiddleware('admin'), async (req, res) => {
             try {
@@ -92,13 +93,16 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
             }
           });
 
-            router.delete('/products/:pid', authenticationMiddleware('jwt'), authorizationMiddleware('admin'), async (req, res) => {
+            router.delete('/products/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['admin','premium']), async (req, res) => {
                 try {
-                  req.logger.info('user Rps', req.user.role);
                   const { params: { pid } } = req;
-                  if (req.user.role !== 'admin') {
+                  if (req.user.role !== 'admin' && req.user.role !== 'premium') {
                     return res.status(403).json({ message: 'No tiene permisos para eliminar productos' });
-                  }
+                  } 
+                 const productToDelete= await ProductsController.getById(pid)
+                  if (req.user.role === 'premium' && productToDelete.owner !== req.user.email) {
+                      return res.status(403).json({ message: 'No tienes permisos para borrar productos que no hayas creado.' });
+                       } 
                   await ProductsController.deleteById(pid);
                   res.status(204).end();
                 } catch (error) {

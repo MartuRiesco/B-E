@@ -9,6 +9,7 @@ thumbnails:{type: Array},
 stock: {type: Number, required:true},
 code:{type: String, required:true},
 category:{type: String, required:true},
+owner: { type: String, required: true, default: 'admin'},
 status:{type: Boolean, required:true, default:true},
 }, {timestamps:true})
 productSchema.plugin(mongoosePaginate);
