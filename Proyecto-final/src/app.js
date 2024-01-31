@@ -2,8 +2,8 @@ import handlebars from 'express-handlebars';
 import path from 'path';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
-import {ProductRouter, products} from "../src/routes/products.router.js"
-import { __dirname, /* socketServer, */ app } from './utils.js';
+import { products} from "../src/routes/products.router.js"
+import { __dirname, app } from './utils.js';
 import productApiRouter from './routes/api/product.router.js'
 import productViewsRouter from './routes/views/products.router.js'
 import cartApiRouter from './routes/api/cart.router.js'
@@ -12,11 +12,11 @@ import MessageViewsRouter from './routes/views/chats.router.js'
 import chatRouter from './routes/api/chat.router.js'
 import indexRouter from './routes/api/index.router.js'
 import indexrut from './routes/views/index.js'
-/* import sessionRouter from './routes/api/sessions.router.js' */
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import authRouter from './routes/api/auth.router.js';
 import userRouter from './routes/api/user.router.js'
 import{ init as initPassportConfig }from './config/passport.config.js'
-import expressSession from 'express-session';
 import MongoStore from 'connect-mongo';
 import { URI } from './db/mongodb.js';
 import config from './config.js';
@@ -38,22 +38,26 @@ app.use(addLogger)
 const COOKIE_SECRET = config.cookeSecret /* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
 
 app.use(cookieParser(COOKIE_SECRET));
-/* app.use(expressSession({
-  secret: SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: URI,
-    mongoOptions: {},
-    ttl: 60,
-  })
-})) */
 initPassportConfig()
 app.use(passport.initialize());
-/* app.use(passport.session()); */
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: 'Tienda DEPMAR API',
+      description: 'Esta es la documentación de la API de DEPMAR. Una aplicación para adquirir ropa deportiva 😍.',
+    },
+  },
+  apis: [path.join(__dirname, '..', 'src\\', 'docs', '**', '*.yaml')],
+};
+console.log('swaggerOptions', swaggerOptions);
+
+const specs = swaggerJsDoc(swaggerOptions);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
 
 app.use('/', indexRouter, indexrut );
-/* app.use('/api', sessionRouter); */
 app.use('/', authRouter)
 app.use('/', cartApiRouter)
 app.use('/',  productApiRouter,)

@@ -28,7 +28,7 @@ export default class User {
     async updateById(id, data) {
         const updateResult = await this.dao.updateById(id,  data);
         console.log('upd resul', updateResult);
-        return updateResult;  // Devuelve directamente el resultado de la actualización
+        return updateResult; 
       }
       
     

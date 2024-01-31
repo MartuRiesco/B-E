@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url';
 import passport from 'passport';
 import express from "express"
 import { Server } from "socket.io";
-import { log } from 'console';
 import config from './config.js';
 export const __filename = fileURLToPath(import.meta.url);
 

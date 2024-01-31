@@ -13,7 +13,7 @@ router.get('/users',
     const users = await UserModel.find({});
     res.status(200).json(users);
   });
-  router.put('/users/premium/:uid', authenticationMiddleware('jwt'), authorizationMiddleware(['premium']), async (req, res)=>{
+  router.put('/users/premium/:uid', authenticationMiddleware('jwt'), authorizationMiddleware(['premium', 'user']), async (req, res)=>{
     try{
       const { params: { uid } } = req;
     const userToUpdate = await AuthController.changeUserRole(uid)
