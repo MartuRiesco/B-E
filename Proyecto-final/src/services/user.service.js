@@ -16,7 +16,7 @@ export default class UserService {
   
     static updateById(pid, data) {
       console.log('data', data);
-      return userRepository.updateById({ _id: pid }, { data });
+      return userRepository.updateById({ _id: pid },data );
     }
   
     static async deleteById(pid) {
