@@ -1,71 +1,126 @@
-import { expect } from "chai";
-import supertest from "supertest";
-import mongoose from "mongoose";
-import config from "../src/config.js";
-import app from "../src/app.js"; // Importa tu aplicación Express
+import { expect } from 'chai';
+import supertest from 'supertest';
+import { faker } from '@faker-js/faker';
+import { getNewId } from '../src/utils.js';
+import mongoose from 'mongoose';
+import config from '../src/config.js';
+import 'dotenv/config';
 
-const request = supertest(app); 
-describe('Test de integracion - Products', () => {
-    const user = {
-        "email": "admin@gmail.com",
-        "password": "1234"
+// const expect = chai.expect;
+const requester = supertest('http://localhost:8080');
+
+describe('Tests del modulo products', function () {
+    this.timeout(8000);
+    let cookie;
+
+    const userMock = {
+        first_name: 'Nombre',
+        last_name: 'Apellido',
+        email: 'na@hotmail.com',
+        age: 50,
+        password: '1234',
+        rol: 'admin'
     };
-    
-    let cookie = {};
+    before(async function () {
 
-    before(async () => {
-        const URL = config.mongodbUri;
-        await mongoose.connect(URL);
-        console.log('Conectado a la db correctamente');
-        await request.post('/auth/login').send(user)
-        .then((result) => {
-            const cookieResult = result.header["set-cookie"][0];
-            cookie = cookieResult;
-        });
+        await mongoose.connect(
+            config.mongodbUri
+            // config.db.mongodbURL_TEST
+            // ,
+            // { useNewUrlParser: true, useUnifiedTopology: true }
+        );
+
+        // Verifica si hay alguna colección existente antes de intentar eliminarla
+        const collections = await mongoose.connection.db.collections();
+        for (let collection of collections) {
+            await collection.deleteMany({});
+        }
+
+        await requester.post('/auth/register').send(userMock);
+
+        const {
+            headers,
+            statusCode,
+            ok,
+            _body
+        } = await requester.post('/auth/login').send(userMock);
+        await requester.post('/auth/login').send(userMock);
+        const [key, value] = headers['set-cookie'][0].split('=');
+        cookie = { key, value };
     });
 
-    describe("Test del router de productos", () => {
-        let productId; // Para almacenar el ID del producto creado para su posterior eliminación
 
-        it.only("El método GET de la ruta '/products' debe retornar la lista de todos los productos", async () => {
-            try {
-                const response = await request.get("/products").set('Cookie', cookie); 
-                expect(response.status).to.equal(200);
-                expect(response.body).to.be.an("array");
-            } catch (error) {
-                console.error("Error al realizar la solicitud:", error);
-                // Puedes agregar más detalles al mensaje de error si lo deseas
-                throw new Error("La solicitud de obtener productos ha excedido el tiempo de espera.");
-            }
-        });
-    
+    after(async function () {
+        const collections = await mongoose.connection.db.collections();
+        for (let collection of collections) {
+            await collection.deleteMany({});
+        }
+        await mongoose.connection.close();
+    })
+    it('Debe crear un producto correctamente', async function () {
+        const productMock = {
+            title: faker.commerce.productName(),
+            description: `${faker.commerce.productName()} = ${faker.lorem.word(5)}`,
+            code: getNewId(),
+            price: faker.number.float({ min: 1, max: 1000000, precision: 0.01 }),
+            stock: faker.number.int({ min: 0, max: 10000 }),
+            category: faker.commerce.department()
+        };
+        const {
+            statusCode,
+            ok,
+            _body,
+        } = await requester.post('/products').send(productMock)
+            .set('Cookie', [`${cookie.key}=${cookie.value}`]);;
 
-  it("El método POST en la ruta '/products' debe crear un producto satisfactoriamente", async () => {
-    const newProduct = {
-      title: "Producto de pruebass",
-      description: "Descripción del producto de prueba",
-      price: 100,
-      code:111,
-      category: "Prueba",
-      stock: 10,
-      thumbnail: "imagen.png"
-    };
+        // console.log("statusCode", statusCode)
+        // console.log("ok", ok)
+        // console.log("_body", _body)
+        expect(statusCode).to.be.equals(201);
+        expect(ok).to.be.ok;
+        expect(_body).to.have.property('_id')
+    });
 
-    const response = await request.post("/products").set('Cookie', cookie).send(newProduct);
-    expect(response.status).to.equal(201);
-    console.log(response.payload, 'id');
-    expect(response._body).to.be.an("array");
-    expect(response._data).to.have.property("_id");
-    productId = response.body._id;
-    console.log(productId); // Almacena el ID del producto creado para eliminarlo más tarde
-  });
+    it('Obtiene la lista de productos', async function () {
+        const {
+            statusCode,
+            ok,
+            _body
+        } = await requester.get('/products')
+            .set('Cookie', [`${cookie.key}=${cookie.value}`]);
+            console.log("body", ok)
+        expect(statusCode).to.be.equals(200);
+        expect(ok).to.be.ok;
+        expect(Array.isArray(_body.docs)).to.be.ok;
+        expect(_body.docs).to.have.length(1)
+        
+    });
 
-  it("El método DELETE en la ruta '/products/:pid' debe borrar un producto según su ID", async () => {
-    if (!productId) {
-      throw new Error("No se pudo obtener el ID del producto creado anteriormente");
-    }
+    it('Obtiene un producto por su id', async function () {
+        let { _body: firstResponseBody } = await requester.get('/products')
+            .set('Cookie', [`${cookie.key}=${cookie.value}`]);
 
-    const response = await request.delete(`/products/${productId}`);
-    expect(response.status).to.equal(204);
-  });
-});})
+        const pid = firstResponseBody.docs[0]._id;
+
+        const {
+            statusCode,
+            ok,
+            _body
+        } = await requester.get(`/products/${pid}`)
+            .set('Cookie', [`${cookie.key}=${cookie.value}`]);
+
+        expect(statusCode).to.be.equals(200);
+    });
+
+    it('Crea 5 productos Mocking', async function () {
+        let { statusCode, ok, _body } = await requester.post('/products/mockingproducts')
+            .set('Cookie', [`${cookie.key}=${cookie.value}`]);
+
+        expect(statusCode).to.be.equals(200);
+        expect(ok).to.be.ok;
+        expect(_body).to.have.property('message', 'Productos creados')
+
+    })
+
+
+});
