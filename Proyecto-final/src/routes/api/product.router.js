@@ -18,7 +18,8 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
   const result = await productModel.paginate(criteria, opts);
   req.logger.info('rol', role);
   req.logger.info('cart id req user', cartId);
-  res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId}));
+  res.status(200).json(buildResponse({ ...result, group, sort, first_name, last_name, role, cartId}))
+  /* res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId})); */
 } catch (error) {
   req.logger.error('Ah ocurrido un error durante la busqueda de productos 😨');
   next(error);
@@ -61,7 +62,8 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
       }
         const { first_name, last_name, role, cartId } = req.user;
         const data = await ProductsController.createFakeProducts();
-        res.render('products', buildResponse({ ...data, group, sort, first_name, last_name, role, cartId}));
+        res.status(200).json({ message: 'Productos creados' })
+        // res.render('products', buildResponse({ ...data, group, sort, first_name, last_name, role, cartId}));
       } catch (error) {
         req.logger.error("Error: ", error.message);
         next(error);

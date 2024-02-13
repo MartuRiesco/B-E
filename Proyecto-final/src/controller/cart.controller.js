@@ -9,9 +9,10 @@ export default class CartController {
     static async getAllCarts(req, res) {
       try {
         const carts = await CartManager.getAll();
-       req.logger.info(`Carritos disponibles ${carts}`);
+       console.log(`Carritos disponibles ${carts}`);
+       return carts
       } catch (error) {
-        req.logger.error(`Carritos no disponibles`);
+        console.log(`Carritos no disponibles, ${error.message}`);
       }
     }
   
@@ -56,8 +57,9 @@ export default class CartController {
         try {
          /*  const { cid, pid } = req.params;
            */
-          await CartManager.addProductToCart(cid, pid);
-          console.log('Producto agregado correctamente');
+         const cart=  await CartManager.addProductToCart(cid, pid);
+         console.log('Producto agregado correctamente');
+         return cart
         } catch (error) {
           console.log(error.message);
           console.log(`No se pudo agregar el producto al carrito`);

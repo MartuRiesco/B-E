@@ -57,7 +57,8 @@ export default class CartDAO {
       cart.products[index].quantity++;
     }
 
-    await cart.save();
+    const cartProd = await cart.save();
+    return cartProd
     } catch (error) {
       console.log(error.message);
     }

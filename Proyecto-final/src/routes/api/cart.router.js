@@ -7,9 +7,9 @@ import ProductsController from "../../controller/product.controller.js";
 const router = Router()
 router.post('/carts/:cid/purchase', authenticationMiddleware('jwt'), CartController.purchaseCart);
 
-router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('user'), async(req, res)=>{
+router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware(['premium', 'admin']), async(req, res)=>{
   try {
-    const carts = await CartController.getAllCarts({}).populate('user').populate('products.product');
+    const carts = await CartController.getAllCarts({})
     res.status(200).json(carts)
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
@@ -22,7 +22,8 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('us
         const cartId =user.cartId
         console.log(cartId);
         const result = await CartController.getCartById(cartId);
-        res.render('cart', buildResponse(cartId, result));
+        res.status(200).json(buildResponse(cartId, result))
+       /*  res.render('cart', buildResponse(cartId, result)); */
       } catch (error) {
         req.logger.error(error.message)
       }
@@ -43,7 +44,7 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('us
             const cart = await CartController.getOrCreateCart(body)
             res.status(201).send('carrito agregado correctamente').json({cart})
             })
-    router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['user', 'premium']), async(req, res)=>{
+    router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['admin', 'premium']), async(req, res)=>{
         const {params:{pid,cid}}= req  
         console.log('user ', req.user); 
         const productToAdd= await ProductsController.getById(pid)
@@ -53,7 +54,8 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware('us
       } else{
         console.log(cid);
             const cart = await CartController.addProductToCart(cid, pid)
-            res.status(201).send('producto agregado correctamente')}
+            console.log('cart, rot', cart);
+            res.status(201).json(cart)}
             })
     router.delete('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), async (req, res) => {
                 try {

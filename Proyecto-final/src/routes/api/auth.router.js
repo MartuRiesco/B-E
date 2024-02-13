@@ -42,7 +42,7 @@ router.post('/auth/register', async (req, res) => {
   });
   const cartDao = new CartDAO();
   await cartDao.createCart({ user: user._id });
-  res.status(201).redirect('/')
+  res.status(201).json({ message: 'Usuario creado con éxito' });
 });
 
 router.post('/auth/login', async (req, res) => {

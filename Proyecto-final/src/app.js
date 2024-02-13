@@ -51,7 +51,6 @@ const swaggerOptions = {
   },
   apis: [path.join(__dirname, '..', 'src\\', 'docs', '**', '*.yaml')],
 };
-console.log('swaggerOptions', swaggerOptions);
 
 const specs = swaggerJsDoc(swaggerOptions);
 
