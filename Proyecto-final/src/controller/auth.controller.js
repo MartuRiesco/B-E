@@ -4,8 +4,9 @@ import { createHash, tokenGenerator, isPasswordValid } from "../utils.js";
 import config from '../config.js'
 import { CustomError } from "../utils/CustomError.js";
 import EnumsError from "../utils/enumError.js";
-import { generatorUserError, validatorUserError } from "../utils/CauseMessageError.js";
+import { generatorUserError, generatorUserUpdate, validatorUserError } from "../utils/CauseMessageError.js";
 import EmailService from "../services/email.service.js";
+import userModel from "../models/user.model.js";
 
 const Admin = {first_name: config.adminName,
   last_name: config.adminLastname,
@@ -93,6 +94,7 @@ export default class AuthController{
             code: EnumsError.INVALID_PARAMS_ERROR,
           })
         }console.log('user id', user.id);
+         await userModel.findByIdAndUpdate(user.id, { last_connection: Date.now() }); 
         const cart = await CartManager.getOrCreateCart(user.id);
         const isValidPassword = isPasswordValid(password, user);
         if (!isValidPassword) {
@@ -152,18 +154,32 @@ return userUpdated
 return user
   }
 static async changeUserRole(uid){
-    const userToUpdate = await UserService.getById(uid);
+  
+  const userToUpdate = await UserService.getById(uid);
     console.log('user to update', userToUpdate);
     if (!userToUpdate) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      console.log({ message: 'Usuario no encontrado' });
+    }
+    console.log('us doc', userToUpdate.documents);
+    const { documents } = userToUpdate;
+    const requiredDocuments = ['identification', 'proofOfAddress', 'bankStatement'];
+    const missingDocuments = requiredDocuments.filter(docName => !documents.find(doc => doc.name === docName));
+    if (missingDocuments.length > 0) {
+      CustomError.createError({
+        name: 'Error actualizando al usuario',
+        cause: generatorUserUpdate(documents),
+        message: 'Faltan completar campos 😨.',
+        code: EnumsError.INVALID_PARAMS_ERROR,
+      });
     }
     const UserRole =  userToUpdate.role
-   const UserUpdated = UserRole === 'user' ? 'premium' : 'user';
-   const userToUp = {...userToUpdate, role: UserUpdated}
-console.log('user updated', UserUpdated);
-    const user=  await UserService.updateById(uid, userToUp);
-    console.log('uo', userToUpdate);
-    return UserUpdated
+      const UserUpdated = UserRole === 'user' ? 'premium' : 'user';
+      const userToUp = {...userToUpdate, role: UserUpdated}
+   console.log('user updated', UserUpdated);
+       const user=  await UserService.updateById(uid, userToUp);
+       console.log('uo', user);
+       return UserUpdated
+
 }}
 
 

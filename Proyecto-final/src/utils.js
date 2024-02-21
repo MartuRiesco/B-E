@@ -1,12 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
-import http from 'http'
+import fs from 'fs'
 import bcrypt from 'bcrypt'
 import JWT from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import passport from 'passport';
 import express from "express"
 import { Server } from "socket.io";
+import multer from 'multer';
 import config from './config.js';
 export const __filename = fileURLToPath(import.meta.url);
 
@@ -97,4 +98,35 @@ export const authorizationMiddleware = (requiredRoles) => (req, res, next) => {
       this.statusCode =status
     }
   }
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      let folderPath = null;
+     const {body:{documentType}} = req
+      console.log('file.fieldname',file);
+  
+      switch (documentType) {
+        case 'profileImg':
+          folderPath = path.join(__dirname, './imgs/profiles');
+          break;
+        case 'productsImg':
+          folderPath = path.join(__dirname, './imgs/products');
+          break;
+        case 'images':
+          folderPath = path.join(__dirname, '../public/images');
+          break;
+        default:
+          folderPath = path.join(__dirname, '../imgs/documents');
+          
+      }
+      fs.mkdirSync(folderPath, { recursive: true });
+      cb(null, folderPath);
+    },
+    filename: (req, file, cb) => {
+      console.log('filename', file);
+      const { user: { id } } = req;
+      cb(null, `${id}-${file.originalname}`);
+    },
+  });
+  export const uploader = multer({storage});
 export {getNewId, /* socketServer, */ app}

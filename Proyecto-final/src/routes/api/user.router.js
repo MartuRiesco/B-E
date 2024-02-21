@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import UserModel from '../../models/user.model.js'
-import {  authenticationMiddleware, authorizationMiddleware, createHash } from '../../utils.js';
+import {  authenticationMiddleware, authorizationMiddleware, createHash, uploader } from '../../utils.js';
 import AuthController from '../../controller/auth.controller.js';
 
 const router = Router();
@@ -19,15 +19,39 @@ router.get('/users',
     const userToUpdate = await AuthController.changeUserRole(uid)
   res.status(200).json({ message: `Rol de usuario actualizado con éxito, user: ${userToUpdate} `});
 } catch (error) {
-  console.error(error);
-  res.status(500).json({ message: 'Error al actualizar el rol del usuario' });
-}
+  console.error(error.message);
+  res.status(400).json({ message: 'Error al actualizar el rol del usuario. Faltan completar documentos' });
+} 
   
   })
-  
+ router.post('/users/:uid/documents',authenticationMiddleware('jwt'), uploader.single('file' ), async (req, res, next)=>{
+  try {
+    const {
+      params: { uid },
+      file,
+      body: { documentType }
+    } = req;
+    const upDocs = 
+        {
+          name: documentType,
+          reference: file.filename,
+        };
+        console.log('up',file.fieldname);
+      
+    console.log('file', file)
+    
+    const user = await UserModel.findById(uid);
+    if (!user) {
+      return res.status(404).json({ message: `No se encontró el usuario ${uid} 👽` });
+    }
+    user.documents.push(upDocs)
+    await user.save()
 
-
-
+return res.status(201).json({ message: 'Documents uploaded successfully' });
+} catch (error) {
+next(res.status(error.statusCode || 500).json({ message: error.message }));
+}
+}) 
 
 router.post('/users',
   passport.authenticate('jwt', { session: false }),

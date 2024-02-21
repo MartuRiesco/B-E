@@ -4,6 +4,7 @@ import userModel from "../../models/user.model.js";
 import passport from 'passport';
 import { authenticationMiddleware, authorizationMiddleware  } from "../../utils.js";
 import ProductsController from "../../controller/product.controller.js";
+import { uploader } from "../../utils.js";
 
 const router = Router()
 router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) => {
@@ -18,7 +19,7 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
   const result = await productModel.paginate(criteria, opts);
   req.logger.info('rol', role);
   req.logger.info('cart id req user', cartId);
-  res.status(200).json(buildResponse({ ...result, group, sort, first_name, last_name, role, cartId}))
+  res.status(200).render('products',buildResponse({ ...result, group, sort, first_name, last_name, role, cartId} ))
   /* res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId})); */
 } catch (error) {
   req.logger.error('Ah ocurrido un error durante la busqueda de productos 😨');

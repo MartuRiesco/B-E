@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
   provider: String,
   role: { type: String, default: 'user',  enum: ['user', 'premium', 'admin']  },
   cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
+  documents: [{name: { type: String }, reference: { type: String }}],
+  last_connection: { type: Date, default: null },
   jwtToken: String,
 }, { timestamps: true });
 userSchema.pre('find', function() {

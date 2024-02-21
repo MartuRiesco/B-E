@@ -14,3 +14,13 @@ export const generatorUserError = (user) => {
    - email       : ${email}
    - password    : ${password}`;
   } 
+  export const generatorUserUpdate = (user ) =>{
+    return `Todos lo campos son requerios y deben ser valido 😱.
+    Lista de campos recibidos en la solicitud:
+      -identification: ${user.documents}
+      - proofOfAddress   : ${user.documents}
+      - bankStatement       : ${user.documents}
+      
+      `;
+  };
+  
