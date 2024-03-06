@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra realizada</title>
+</head>
+<body>
+     <h1>Compra realizada</h1>
+    {{#if productsNotBuyed}}
+        <p>Estos productos no pudieron ser procesados:</p>
+        <ul>
+            {{#each productsNotBuyed}}
+                <li>
+                    <strong>Título:</strong> {{this.title}}, <strong>Descripción:</strong> {{this.description}}
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>Tu compra ha sido procesada con éxito.</p>
+        <h2>Ticket de compra</h2>
+        <p><strong>Código:</strong> {{ticket.code}}</p>
+        <p><strong>Total:</strong> {{ticket.amount}} USD</p>
+        <p><strong>Comprador:</strong> {{ticket.purchaser}}</p>
+    {{/if}}
+    <a href="/products" role="button">Volver a los productos</a>
+</body>
+   
+</body>
+</html>

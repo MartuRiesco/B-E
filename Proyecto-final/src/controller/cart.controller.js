@@ -99,7 +99,7 @@ export default class CartController {
       }
    
 
-      static async purchaseCart(req, res) {
+     /*  static async purchaseCart(req, res) {
         try {
           const { cid } = req.params;
           const cart = await CartController.getCartById(cid, true);
@@ -142,11 +142,72 @@ export default class CartController {
             amount: totalAmount,
             purchaser: req.user.email,
           });
-    
-          res.status(200).json({ ticket, failedProductIds });
+
+          const ticketData = JSON.parse(JSON.stringify(ticket));
+    console.log('tiket', ticket);
+          res.status(200).render('purchase', {ticket: ticketData, failedProductIds});
         } catch (error) {
           console.error('Error al procesar la compra:', error.message);
           res.status(500).json({ error: 'Error interno del servidor' });
         }
-      }
+      } */
+      static async purchaseCart(req, res) {
+        try {
+            const { cid } = req.params;
+            const cart = await CartController.getCartById(cid, true);
+        
+            const failedProductIds = [];
+            let totalAmount = 0;
+        
+            for (const cartProduct of cart.products) {
+                const product = await ProductManager.getById(cartProduct.product);
+                console.log('prodc',product);
+                if (product.stock >= cartProduct.quantity) {
+                    // Suficiente stock, procesar la compra
+                    product.stock -= cartProduct.quantity;
+                    await product.save();
+        
+                    totalAmount += product.price * cartProduct.quantity;
+                } else {
+                    // No hay suficiente stock, agregar a la lista de productos fallidos
+                    failedProductIds.push(cartProduct.product);
+                }
+            }
+              
+            // Filtrar productos no comprados y actualizar el carrito
+            const remainingProducts = cart.products.filter(
+                (cartProduct) => failedProductIds.includes(cartProduct.product.toString())
+            );
+        
+            cart.products = remainingProducts;
+            await cart.save();
+            console.log('cart', remainingProducts);
+        
+            // Generar el ticket
+            const ticket = await TicketController.createTicket({
+                code: getNewId(),
+                amount: totalAmount,
+                purchaser: req.user.email,
+            });
+            
+            // Obtener los productos no comprados
+            const productsNotBuyed = [];
+            for (const productId of failedProductIds) {
+                const productNotBuyed = await ProductManager.getById(productId);
+                productsNotBuyed.push(productNotBuyed);
+            }
+    
+            console.log('productsNotBuyed', productsNotBuyed);
+    const prod = JSON.parse(JSON.stringify(productsNotBuyed))
+            const ticketData = JSON.parse(JSON.stringify(ticket));
+            console.log('tiketsss', ticketData);
+            
+            res.status(200).render('purchase', { ticket: ticketData, productsNotBuyed: prod });
+        } catch (error) {
+            console.error('Error al procesar la compra:', error.message);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
+      
     }

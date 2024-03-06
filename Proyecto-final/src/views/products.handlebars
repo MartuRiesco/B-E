@@ -22,7 +22,7 @@
   <p>{{this.category}}</p>
    <p>{{this.stock}}</p>
   <p>Code:</strong>  {{this.code}}</p>
-  <p><button class="button addToCart" id="add"  data-productid="{{this._id}}" >Add to Cart</button></p>
+  <p><button class="button addToCart" id="add"  data-productid="{{this._id}}"  data-owner="{{this.owner}}">Add to Cart</button></p>
 </div>
         <hr>
        
@@ -48,5 +48,6 @@
 <script src="/js/index.js"></script>
 <script>
   var userRol = "{{userRol}}";
+   var userEmail = "{{userEmail}}";
   var cartId = "{{userCart}}"
 </script>

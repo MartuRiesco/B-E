@@ -22,7 +22,7 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware(['p
         const cartId =user.cartId
         console.log(cartId);
         const result = await CartController.getCartById(cartId);
-        res.status(200).json(buildResponse(cartId, result))
+        res.status(200).render('cart',buildResponse(cartId, result))
        /*  res.render('cart', buildResponse(cartId, result)); */
       } catch (error) {
         req.logger.error(error.message)
@@ -44,19 +44,27 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware(['p
             const cart = await CartController.getOrCreateCart(body)
             res.status(201).send('carrito agregado correctamente').json({cart})
             })
-    router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['admin', 'premium']), async(req, res)=>{
-        const {params:{pid,cid}}= req  
-        console.log('user ', req.user); 
-        const productToAdd= await ProductsController.getById(pid)
-        console.log('ptd', productToAdd.owner);
-        if (req.user.role === 'premium' && productToAdd.owner === req.user.email) { 
-          return res.status(403).json({ message: 'No podes agregar productos que  hayas creado.' });
-      } else{
-        console.log(cid);
-            const cart = await CartController.addProductToCart(cid, pid)
-            console.log('cart, rot', cart);
-            res.status(201).json(cart)}
-            })
+            router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['user', 'premium']), async(req, res) => {
+             try {
+              const { params: { pid, cid } } = req;
+              console.log('user ', req.user); 
+              const productToAdd = await ProductsController.getById(pid);
+              console.log('ptd', productToAdd.owner);
+              
+              // Verificar si el usuario es premium y el producto pertenece al usuario
+              if (req.user.role === 'premium' && productToAdd.owner === req.user.email) { 
+                return res.status(403).json({ message: 'No puedes agregar productos que hayas creado.' });
+              } else {
+                console.log(cid);
+                const cart = await CartController.addProductToCart(cid, pid);
+                console.log('cart, rot', cart);
+                res.status(201).json(cart);
+              }
+             } catch (error) {
+              console.log('error', error.message);
+              return res.status(403).json({ message: 'Ocurrio un error al agregar el producto al carrito.' });
+             } 
+            });
     router.delete('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), async (req, res) => {
                 try {
                     const {params:{pid,cid}}= req

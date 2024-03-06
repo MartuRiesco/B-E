@@ -12,17 +12,7 @@ import CartDAO from '../../dao/Cart.dao.js';
 const router = Router();
 
 router.post('/auth/register', async (req, res) => {
- /*  try {
-    req.logger.info('req.body:', req.body);
-   const token =  await AuthController.register(req.body)
-   req.looger.info('token auth', token);
-    res.cookie('access_token', token, { httpOnly: true, signed: true });
-    res.status(201)
-    .redirect('/')
-  } catch (error) {
-    res.status(400).json({message: error.message})
-  }
-  */
+
   const {
     body: { first_name, last_name, email, password, role },
   } = req;
@@ -43,6 +33,17 @@ router.post('/auth/register', async (req, res) => {
   const cartDao = new CartDAO();
   await cartDao.createCart({ user: user._id });
   res.status(201).json({ message: 'Usuario creado con éxito' });
+   /*  try {
+    req.logger.info('req.body:', req.body);
+   const token =  await AuthController.register(req.body)
+   req.looger.info('token auth', token);
+    res.cookie('access_token', token, { httpOnly: true, signed: true });
+    res.status(201)
+    .redirect('/')
+  } catch (error) {
+    res.status(400).json({message: error.message})
+  }
+  */
 });
 
 router.post('/auth/login', async (req, res) => {
@@ -58,7 +59,7 @@ try {
 }})
 
  
-router.post('/auth/recovery-password', async (req, res) => {
+router.post('/recovery-password', async (req, res) => {
 try {
   console.log('user', req.body);
   const user = await AuthController.recovery(req.body)

@@ -1,41 +1,6 @@
 <div >
-      <p>Estos son los productos disponibles:</p>
-      <div class="container-card">
-    {{#each products}}
-      <div  >
-             {{!--   <strong><p>Title:</strong>  </p>
-               <strong>  <p>Description: </strong> {{this.description}}</p>
-                <strong> <p>Price: </strong> ${{this.price}}</p>
-               <strong> <p>status: </strong> {{this.status}}</p>
-               <strong>  
-                <strong>  <p>Id:</strong>  {{this._id}}</p> --}}
-                <div class="card">
-  <img src="" alt="Denim Jeans" style="width:100%">
-  <h1>{{this.title}}</h1>
-  <p class="price">{{this.price}}</p>
-  <p>{{this.description}}</p>
-  <p>Code:</strong>  {{this.code}}</p>
-  <p><button>Add to Cart</button></p>
-</div>
-        <hr>
-       
-      </div>
-    {{/each}}
- </div>
-
-{{!-- 
-<div>
-  <h1>Agregar Producto</h1>
-  <form id="form-product">
- <input type="text" id="title" placeholder="title" required>
- <input type="text" id="description" placeholder="description" required>
- <input type="number" id="price" placeholder="price" required>
- <input type="boolean" id="status" placeholder="status" required>
- <input type="text" id="code" placeholder="code" required>
-  <input type="submit" value="enviar">
-</form>
-</div> --}}
-
+      <h1>Bienvenido/a a la tienda de deportes!!!</h1>
+    <a href="/login" type="button">Login</a>
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>

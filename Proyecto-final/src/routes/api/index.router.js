@@ -18,8 +18,11 @@ const router = Router();
   router.get('/profile', /* privateRouter */ (req, res) => {
     res.render('profile', { title: 'Perfil', user: req.session.user });
   });
-  
   router.get('/', /* publicRouters */ (req, res) => {
+    res.render('home', { title: 'Login' });
+  });
+  
+  router.get('/login', /* publicRouters */ (req, res) => {
     res.render('login', { title: 'Login' });
   });
   
@@ -27,7 +30,7 @@ const router = Router();
     res.render('register', { title: 'Register' });
   });
   router.get('/logout', (req, res) => {
-    res.clearCookie('access_token').redirect('/')
+    res.clearCookie('access_token').redirect('/login')
 });
   router.get('/recovery-password',/*  publicRouters, */ (req, res) => {
     res.render('recovery-password', { title: 'Recuperar Contraseña' });

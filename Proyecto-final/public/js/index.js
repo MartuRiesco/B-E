@@ -3,16 +3,23 @@
     const socket = io()
      const div = document.getElementById('ul-websocket');
         const formProduct = document.getElementById('form-product');
+       
         document.addEventListener('click', (event) => {
           if (event.target.classList.contains('addToCart')) {
-            if (userRol === 'user') {
+            const productOwner = event.target.dataset.owner
+            if (userRol === 'user'  ) {
               const pid = event.target.dataset.productid;
               addProductToCart(cartId, pid);
               alert('Se agregó al carrito');
-            } else {
+            } 
+            if( userRol === 'premium' && userEmail === productOwner ){
               alert('Solo los usuarios pueden agregar al carrito');
-            }}
-          });
+            } else{
+              const pid = event.target.dataset.productid;
+              addProductToCart(cartId, pid);
+              alert('Se agregó al carrito');
+            }
+          };})
           function addProductToCart(cartId, pid) {
             socket.emit('addProductToCart', cartId.toString(),  pid);
           }
@@ -36,7 +43,7 @@
           socket.emit("addProduct", { title, description, price, code, category, stock });
           
         });
-  
+       
         
 /* formProduct.addEventListener('submit', (event) => {
   event.preventDefault();

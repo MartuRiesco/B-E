@@ -8,7 +8,9 @@ export default class ProductsService {
 
   static async create(payload, user) {
     console.log('Creando un nuevo producto 👽');
-    const isPremiumUser = user.role === 'premium';
+    const isPremiumUser = user.role  === 'premium';
+    console.log('e,m',user.email);
+    console.log('is', isPremiumUser);
     const owner = isPremiumUser ? user.email : 'admin';
     const productData = { ...payload, owner };
     const product = await ProductDao.create(productData);

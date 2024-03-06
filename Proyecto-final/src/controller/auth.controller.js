@@ -114,7 +114,9 @@ export default class AuthController{
     }
     
     static async recovery(data){
-      const { email, password } = data;
+      try {
+        const { email, newPassword } = data;
+        console.log('passs', newPassword);
       const user = await UserService.get({ email });
       if (!user) {
         CustomError.createError({
@@ -127,12 +129,18 @@ export default class AuthController{
           code: EnumsError.INVALID_PARAMS_ERROR,
         })
       };
-      const hashedPassword = createHash(password);
+      const hashedPassword = createHash(newPassword);
+      console.log('has', hashedPassword);
     const  userId = user.id 
     const updateResult = await UserService.updateById(userId, { password: hashedPassword });
     const userUpdated = await UserService.getById(userId);
  
 return userUpdated
+        
+      } catch (error) {
+        console.log('error ', error.message);
+      }
+      
   }
     static async restorePassword(data){
       const { email} = data;
@@ -153,6 +161,23 @@ return userUpdated
   
 return user
   }
+
+static async changeUserRoleByAdmin(uid){
+  const userToUpdate = await UserService.getById(uid);
+  console.log('user to update', userToUpdate);
+  if (!userToUpdate) {
+    console.log({ message: 'Usuario no encontrado' });
+  }
+  const UserRole =  userToUpdate.role
+      const UserUpdated = UserRole === 'user' ? 'premium' : 'user';
+      const userToUp = {...userToUpdate, role: UserUpdated}
+   console.log('user updated', UserUpdated);
+       const user=  await UserService.updateById(uid, userToUp);
+       console.log('uo', user);
+       return UserUpdated
+
+}
+
 static async changeUserRole(uid){
   
   const userToUpdate = await UserService.getById(uid);

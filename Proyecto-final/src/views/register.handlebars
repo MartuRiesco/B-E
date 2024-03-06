@@ -1,15 +1,33 @@
 <article>
-  <form action="/auth/register" method="post">
+  <form action="/auth/register" method="post" id="registerForm">
     <header>
       <h1>Registro</h1>
     </header>
-    <input type="text" name="first_name" placeholder="Nombre" required />
-    <input type="text" name="last_name" placeholder="Apellido" required />
-    <input type="email" name="email" placeholder="Correo" required />
-    <input type="number" name="age" placeholder="Edad" required />
-    <input type="password" name="password" placeholder="Contraseña" required />
+    <input type="text" id="first_name" name="first_name" placeholder="Nombre" required />
+  <input type="text" id="last_name" name="last_name" placeholder="Apellido" required />
+  <input type="number" id="age" name="age" placeholder="Edad" required />
+  <input type="email" id="email" name="email" placeholder="Correo" required />
+  <input type="password" id="password" name="password" placeholder="Contraseña" required />
     <footer>
       <input type="submit" value="Enviar">
     </footer>
   </form>
 </article>
+
+
+<script>
+   document.getElementById('registerForm').addEventListener('submit', function(event) {
+    const firstNameInput = document.getElementById('first_name');
+    const lastNameInput = document.getElementById('last_name');
+    const firstNameValue = firstNameInput.value;
+    const lastNameValue = lastNameInput.value;
+    
+    const nameRegex = /^[A-Za-z]+$/;
+
+    if (!nameRegex.test(firstNameValue) || !nameRegex.test(lastNameValue)) {
+      alert('El nombre y el apellido solo pueden contener letras');
+      event.preventDefault(); // Evitar que se envíe el formulario
+    }
+  });
+</script>
+

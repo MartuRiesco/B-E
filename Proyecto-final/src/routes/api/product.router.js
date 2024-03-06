@@ -1,10 +1,11 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import productModel from "../../models/product.model.js";
 import userModel from "../../models/user.model.js";
 import passport from 'passport';
 import { authenticationMiddleware, authorizationMiddleware  } from "../../utils.js";
 import ProductsController from "../../controller/product.controller.js";
 import { uploader } from "../../utils.js";
+import EmailService from "../../services/email.service.js";
 
 const router = Router()
 router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) => {
@@ -12,15 +13,16 @@ router.get('/products', authenticationMiddleware('jwt'), async (req, res, next) 
   const { page = 1, limit = 5, group, sort } = req.query;
   const opts = { page, limit, sort: { price: sort || 'asc' } };
   const criteria = {};
-  const { first_name, last_name, role, cartId } = req.user;
+  const { first_name, last_name, role, cartId, email } = req.user;
   if (group) {
     criteria.category = group;
   }
   const result = await productModel.paginate(criteria, opts);
   req.logger.info('rol', role);
   req.logger.info('cart id req user', cartId);
-  res.status(200).render('products',buildResponse({ ...result, group, sort, first_name, last_name, role, cartId} ))
-  /* res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId})); */
+  console.log('userEmail', req.user.email);
+ /*  res.status(200).json(buildResponse({ ...result, group, sort, first_name, last_name, role, cartId} )) */
+  res.render('products', buildResponse({ ...result, group, sort, first_name, last_name, role, cartId, email}));
 } catch (error) {
   req.logger.error('Ah ocurrido un error durante la busqueda de productos 😨');
   next(error);
@@ -38,6 +40,7 @@ const buildResponse = (data) => {
     userLastName: data.last_name,
     userRol: data.role,
     userCart: data.cartId,
+    userEmail: data.email,
     hasPrevPage: data.hasPrevPage,
     hasNextPage: data.hasNextPage,
     chatLink: `http://localhost:8080/chat`,
@@ -73,9 +76,9 @@ router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{
 router.post('/products', authenticationMiddleware('jwt'), authorizationMiddleware(['admin','premium']), async (req, res, next) => {
   try {
     const { body, user } = req;
-    console.log('role del user', req.user);
-    req.logger.info('req.user.role', req.user.role);
-    if (req.user.role !== 'admin' && req.user.role !== 'premium') {
+    console.log('role del user', user);
+    req.logger.info('req.user.role', user.role);
+    if (user.role !== 'admin' && user.role !== 'premium') {
       return res.status(403).json({ message: 'No tienes permisos para crear productos' });
     }
         await ProductsController.create(body, user);
@@ -97,15 +100,24 @@ router.post('/products', authenticationMiddleware('jwt'), authorizationMiddlewar
 
             router.delete('/products/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['admin','premium']), async (req, res) => {
                 try {
-                  const { params: { pid } } = req;
-                  if (req.user.role !== 'admin' && req.user.role !== 'premium') {
+                  const { params: { pid }, user } = req;
+                  if (user.role !== 'admin' && user.role !== 'premium') {
                     return res.status(403).json({ message: 'No tiene permisos para eliminar productos' });
                   } 
                  const productToDelete= await ProductsController.getById(pid)
-                  if (req.user.role === 'premium' && productToDelete.owner !== req.user.email) {
+                 console.log('prod to', productToDelete);
+                  if (user.role === 'premium' && productToDelete.owner !== user.email) {
                       return res.status(403).json({ message: 'No tienes permisos para borrar productos que no hayas creado.' });
                        } 
-                  await ProductsController.deleteById(pid);
+                  if(user.role === 'admin'){
+                    await ProductsController.deleteById(pid);
+                    console.log('prodto', productToDelete.owner);
+                    const emailService = EmailService.getInstance();
+                    emailService.sendDeleteProduct(productToDelete.owner);
+                  }else{
+                    await ProductsController.deleteById(pid);
+                  }
+                  
                   res.status(204).end();
                 } catch (error) {
                   res.status(error.statusCode || 500).json({ message: error.message });
