@@ -22,6 +22,7 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware(['p
         const cartId =user.cartId
         console.log(cartId);
         const result = await CartController.getCartById(cartId);
+        console.log('res', result);
         res.status(200).render('cart',buildResponse(cartId, result))
        /*  res.render('cart', buildResponse(cartId, result)); */
       } catch (error) {
@@ -44,7 +45,7 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware(['p
             const cart = await CartController.getOrCreateCart(body)
             res.status(201).send('carrito agregado correctamente').json({cart})
             })
-            router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['user', 'premium']), async(req, res) => {
+            /* router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['user', 'premium']), async(req, res) => {
              try {
               const { params: { pid, cid } } = req;
               console.log('user ', req.user); 
@@ -64,9 +65,20 @@ router.get('/carts',authenticationMiddleware('jwt'), authorizationMiddleware(['p
               console.log('error', error.message);
               return res.status(403).json({ message: 'Ocurrio un error al agregar el producto al carrito.' });
              } 
+            }); */
+            router.post('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), authorizationMiddleware(['user', 'premium']), async(req, res) => {
+              try {
+                const { params: { pid, cid } } = req;
+                const cart = await CartController.addProductToCart(cid, pid);
+                res.status(201).json(cart);
+              } catch (error) {
+                console.error('Error al agregar producto al carrito:', error);
+                res.status(500).json({ message: 'Error interno del servidor' });
+              } 
             });
     router.delete('/carts/:cid/product/:pid', authenticationMiddleware('jwt'), async (req, res) => {
                 try {
+                  console.log('llega el delete');
                     const {params:{pid,cid}}= req
                     const cart = await CartController.deleteProductFromCart(cid, pid)
                     res.status(201).send('producto borrado correctamente')

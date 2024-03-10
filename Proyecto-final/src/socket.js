@@ -5,6 +5,7 @@ import CartManager from './dao/CartManager.js';
 import CartController from './controller/cart.controller.js';
 import UserDao from './dao/User.dao.js';
 import userModel from './models/user.model.js';
+import ProductsController from './controller/product.controller.js';
 
 let io;
 let messages= []
@@ -33,11 +34,17 @@ export const inits = (httpServer) => {
            
         })
 
-        socketClient.on("addProduct", async (product) => {
-            const {title, description, price,code, category, stock } = product
-            await ProductManager.create({title, description, price,code, category, stock });
+        socketClient.on("addProduct", async (data) => {
+            try {
+              // Obtener los datos del producto y del usuario del objeto recibido
+              const { product, user } = data;
+              await ProductsController.create(product, user);
           
-           })
+            } catch (error) {
+              console.error('Error al agregar el producto:', error);
+              // Manejar el error según sea necesario
+            }
+          });
            let products = await ProductManager.get()
            socketClient.emit('products', products);
            socketClient.on('products', (products) => {

@@ -6,20 +6,19 @@
        
         document.addEventListener('click', (event) => {
           if (event.target.classList.contains('addToCart')) {
-            const productOwner = event.target.dataset.owner
-            if (userRol === 'user'  ) {
+            const productOwner = event.target.dataset.owner;
+        
+            if (userRol === 'user' || (userRol === 'premium' && userEmail !== productOwner)) {
               const pid = event.target.dataset.productid;
               addProductToCart(cartId, pid);
               alert('Se agregó al carrito');
-            } 
-            if( userRol === 'premium' && userEmail === productOwner ){
+            } if(userRol === 'premium' && userEmail === productOwner) {
+              alert('No podes agregar productos propios al carrito');
+            }if(userRol === 'admin'){
               alert('Solo los usuarios pueden agregar al carrito');
-            } else{
-              const pid = event.target.dataset.productid;
-              addProductToCart(cartId, pid);
-              alert('Se agregó al carrito');
             }
-          };})
+          }
+        });
           function addProductToCart(cartId, pid) {
             socket.emit('addProductToCart', cartId.toString(),  pid);
           }
@@ -33,14 +32,21 @@
           const code = document.getElementById("code").value;
           const category = document.getElementById("category").value;
           const stock = document.getElementById("stock").value;
+          const isPremiumUser = userRol  === 'premium';
+          const owner = isPremiumUser ? userEmail : 'admin';
 
           if (userRol !== 'admin' && userRol !== 'premium') {
             alert('No tiene permisos para crear productos');
             return;
+          }else{
+            
+            alert('producto agregado correctamente')
           }
-          alert('producto agregado correctamente')
-        
-          socket.emit("addProduct", { title, description, price, code, category, stock });
+         
+        const product = { title, description, price, code, category, stock}
+        const user ={role: userRol, email:userEmail}
+    
+          socket.emit("addProduct", {product, user} );
           
         });
        

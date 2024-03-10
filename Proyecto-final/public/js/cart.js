@@ -39,5 +39,47 @@ document.addEventListener('DOMContentLoaded', () => {
           // Manejar el error, por ejemplo, mostrar un mensaje al usuario
         }
       });
-    }
-  });
+    }  });
+
+    const emptyButton = document.querySelector('#emptyButton');
+    emptyButton.addEventListener('click', async function (event) {
+      event.preventDefault();
+      const cid = this.getAttribute('data-cid');
+      console.log(cid, 'dic');
+      try {
+        const response = await fetch(`/carts/${cid}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          location.reload();
+          console.log('Cart emptied successfully');
+        } else {
+          console.error('Failed to empty cart:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error emptying cart:', error);
+      }
+    });
+  
+
+    const deleteButtons = document.querySelectorAll('.deleteButton');
+    deleteButtons.forEach((button) => {
+      button.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const cid = this.getAttribute('data-cid');
+        const pid = this.getAttribute('data-pid');
+        try {
+          const response = await fetch(`/carts/${cid}/product/${pid}`, {
+            method: 'DELETE',
+          });
+          if (response.ok) {
+            this.closest('div').remove();
+            window.location.href = `/carts/${cid}`;
+          } else {
+            console.error('Failed to delete product:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error deleting product:', error);
+        }
+      });
+    });

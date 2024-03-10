@@ -70,8 +70,11 @@ export default class CartDAO {
     if (!cart) {
       throw new Exception('No existe ese Carrito', 404);
     }
-
-    const index = cart.products.findIndex((product) => String(product._id) === productId);
+console.log('product', productId);
+    const index = cart.products.findIndex((product) =>{  console.log('pr',product);
+      return  product.product.equals(productId)
+    });
+    console.log('index', index);
     if (index === -1) {
       throw new Exception('No existe ese producto dentro del carrito');
     }

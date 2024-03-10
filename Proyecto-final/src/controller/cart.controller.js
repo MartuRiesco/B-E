@@ -43,13 +43,13 @@ export default class CartController {
     }
     return cart;
   }
-    static async deleteCartById(req, res) {
+    static async deleteCartById(cid) {
         try {
-          const { cid } = req.params;
+          
           await CartManager.deleteById(cid);
           console.log(`Carrito borrado por id correctamente`);
         } catch (error) {
-          console.log(`No se pudo borrar el carrito`);
+          console.log(`No se pudo borrar el carrito`, error.message);
         }
       }
     
@@ -66,13 +66,14 @@ export default class CartController {
         }
       }
     
-      static async deleteProductFromCart(req, res) {
+      static async deleteProductFromCart(cid, pid) {
         try {
-          const { cid, pid } = req.params;
+          console.log('CID:', cid);
+          console.log('PID:', pid);
           await CartManager.deleteProductFromCart(cid, pid);
           console.log('Producto eliminado correctamente');
         } catch (error) {
-          console.log('El producto no se pudo eliminar');
+          console.log('El producto no se pudo eliminar', error.message);
         }
       }
     
