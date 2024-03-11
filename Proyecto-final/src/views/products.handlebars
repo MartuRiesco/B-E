@@ -4,7 +4,7 @@
    <a href="/logout" role="button">Logout</a>
       <a href="{{prevLink}}" role="button" {{#unless hasPrevPage}}disabled{{/unless}} >Anterior</a>
 <a href="{{nextLink}}" role="button" {{#unless hasNextPage}}disabled{{/unless}} >Siguiente</a>
-<a href="http://localhost:8080/carts/{{userCart}}" role="button" class="cart-link">Ver Carrito</a>
+<a href="/carts/{{userCart}}" role="button" class="cart-link">Ver Carrito</a>
 <a href={{chatLink}} role="button"> Ir al chat</a>
 <hr>
           <p>Estos son los productos disponibles:</p>

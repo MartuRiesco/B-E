@@ -23,7 +23,7 @@ import config from './config.js';
 import expressCompression from 'express-compression'
 import { addLogger } from './config/logger.js';
 
-const SESSION_SECRET =  config.sessionSecret/* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
+const SESSION_SECRET =  config.sessionSecret;
 
 
 app.use(addLogger)
@@ -35,7 +35,7 @@ app.use(addLogger)
   const message = `😨 Ah ocurrido un error desconocido: ${error.message}`;
   res.status(500).json({ status: 'error', message });
 });
-const COOKIE_SECRET = config.cookeSecret /* 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@' */;
+const COOKIE_SECRET = config.cookeSecret;
 
 app.use(cookieParser(COOKIE_SECRET));
 initPassportConfig()

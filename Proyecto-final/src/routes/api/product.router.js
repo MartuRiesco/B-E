@@ -43,9 +43,9 @@ const buildResponse = (data) => {
     userEmail: data.email,
     hasPrevPage: data.hasPrevPage,
     hasNextPage: data.hasNextPage,
-    chatLink: `http://localhost:8080/chat`,
-    prevLink: data.hasPrevPage ? `http://localhost:8080/products?limit=${data.limit}&page=${data.prevPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
-    nextLink: data.hasNextPage ? `http://localhost:8080/products?limit=${data.limit}&page=${data.nextPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
+    chatLink: `/chat`,
+    prevLink: data.hasPrevPage ? `/products?limit=${data.limit}&page=${data.prevPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
+    nextLink: data.hasNextPage ? `/products?limit=${data.limit}&page=${data.nextPage}${data.group ? `&group=${data.group}` : ''}${data.sort ? `&sort=${data.sort}` : ''}` : '',
   };
 };
 router.get('/products/:pid',authenticationMiddleware('jwt'),  async(req, res)=>{

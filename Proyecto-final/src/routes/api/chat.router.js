@@ -24,7 +24,7 @@ router.get('/chat',authenticationMiddleware('jwt'), async (req, res) => {
           userName: data.first_name,
           userLastName: data.last_name,
           userRol:data.role,
-          prevLink: `http://localhost:8080/products`
+          prevLink: `/products`
         }}
    /*  router.post('/chat', authorizationMiddleware('user'), async(req, res)=>{
         const {body}= req
